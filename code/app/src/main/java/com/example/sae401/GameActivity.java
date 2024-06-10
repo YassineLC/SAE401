@@ -18,11 +18,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class GameActivity extends AppCompatActivity {
     private JSONObject data;
     private int location = -1;
+    private final ArrayList<Integer> objectIds = new ArrayList<Integer>();
+    private int collectable = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +60,8 @@ public class GameActivity extends AppCompatActivity {
             TextView locationDescTextView = findViewById(R.id.locationDesc);
             locationDescTextView.setText(locationObject.getString("desc"));
             LinearLayout buttonsContainer = findViewById(R.id.buttons_container);
+            LinearLayout objectsContainer = findViewById(R.id.objects_container);
+
             ImageView locationImage = findViewById(R.id.locationImage);
             if (locationObject.has("image")) {
                 locationImage.setVisibility(View.VISIBLE);
@@ -77,6 +82,42 @@ public class GameActivity extends AppCompatActivity {
                 button.setOnClickListener(view -> setLocation(next));
                 buttonsContainer.addView(button);
             }
+
+            objectsContainer.removeAllViews();
+
+            if(locationObject.has("objets"))
+            {
+
+                TextView collectableTextView = findViewById(R.id.collectableTextView);
+                JSONArray objets = locationObject.getJSONArray("objets");
+                for(int i = 0 ; i < objets.length();i++)
+                {
+                    collectable = locationObject.getInt("collectable");
+                    collectableTextView.setText("Remaining : "+String.valueOf(collectable));
+
+                    JSONObject objet = objets.getJSONObject(i);
+                    String objectName = objet.getString("description");
+                    Button button = new Button(this);
+                    button.setText(objectName);
+                    button.setId(objet.getInt("id"));
+                    objectsContainer.addView(button);
+                    button.setOnClickListener(view -> {
+                        try {
+                            collectable = collectObject(objet.getInt("id"), collectable, objectsContainer);
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                        // Mettre à jour la valeur de collectable
+                        // Vous pouvez également mettre à jour l'affichage du nombre collectable ici si nécessaire
+                    });
+
+                }
+
+
+            }
+
+
+
             boolean isFinal = locationObject.getBoolean("final");
             if (isFinal) {
                 Button button = new Button(this);
@@ -105,5 +146,28 @@ public class GameActivity extends AppCompatActivity {
         Log.d("APP","RESTORE");
         int reloc=savedInstanceState.getInt("location");
         setLocation(reloc);
+    }
+    protected int collectObject(int idObject, int collectable, LinearLayout objectsContainer) {
+        if (collectable != 0) {
+            collectable -= 1;
+            objectIds.add(idObject);
+            Log.d("ajout",objectIds.toString());
+
+            // Mettre à jour le nombre collectable affiché
+            TextView collectableTextView = findViewById(R.id.collectableTextView);
+            collectableTextView.setText("Remaining : "+String.valueOf(collectable));
+
+            // Mettre à jour l'affichage des objets
+            Button button = objectsContainer.findViewById(idObject);
+            objectsContainer.removeView(button);
+
+            // Vérifier si tous les objets collectables ont été collectés
+            if (collectable == 0) {
+                objectsContainer.removeAllViews();
+                collectableTextView.setVisibility(View.GONE);
+            }
+        }
+
+        return collectable;
     }
 }
