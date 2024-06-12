@@ -7,4 +7,5 @@
     <string name="english_language">English</string>
     <string name="french_language">French</string>
     <string name="language_settings">Language</string>
+    <string name="return_settings_button">Return</string>
 </resources>

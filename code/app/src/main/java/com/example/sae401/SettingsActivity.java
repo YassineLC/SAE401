@@ -19,6 +19,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         RadioButton englishButton = findViewById(R.id.englishButton);
         RadioButton frenchButton = findViewById(R.id.frenchButton);
+        Button returnButton = findViewById(R.id.return_button);
 
         SharedPreferences prefs = getSharedPreferences("Settings", MODE_PRIVATE);
         String language = prefs.getString("Language", "en");
@@ -31,6 +32,12 @@ public class SettingsActivity extends AppCompatActivity {
 
         englishButton.setOnClickListener(v -> setLocale("en"));
         frenchButton.setOnClickListener(v -> setLocale("fr"));
+
+        returnButton.setOnClickListener(v -> {
+            Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        });
     }
 
     private void setLocale(String lang) {

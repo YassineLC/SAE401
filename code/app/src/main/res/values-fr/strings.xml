@@ -8,4 +8,5 @@
     <string name="english_language">Anglais</string>
     <string name="french_language">Français</string>
     <string name="language_settings">Langue</string>
+    <string name="return_settings_button">Retour</string>
 </resources>
