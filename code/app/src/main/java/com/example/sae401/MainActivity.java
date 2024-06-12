@@ -1,7 +1,6 @@
 package com.example.sae401;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -13,13 +12,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button button = findViewById(R.id.button);
-        // If the method has signature (View v), one can use a direct method reference
+        Button settingsButton = findViewById(R.id.settings_button);
+
         button.setOnClickListener(this::startGameActivity);
+        settingsButton.setOnClickListener(this::startSettingsActivity);
     }
+
     public void startGameActivity(View view) {
         Intent intent;
         intent = new Intent(this, GameActivity.class);
         intent.putExtra("fileName", "test");
+        startActivity(intent);
+    }
+
+    public void startSettingsActivity(View view) {
+        Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
 }

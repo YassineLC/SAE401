@@ -3,4 +3,8 @@
     <string name="launch_game">Start game</string>
     <string name="app_title_name">%1$s: %2$s</string>
     <string name="won_game">Good game!</string>
+    <string name="settings_game">Settings</string>
+    <string name="english_language">English</string>
+    <string name="french_language">French</string>
+    <string name="language_settings">Language</string>
 </resources>
