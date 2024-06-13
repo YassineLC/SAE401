@@ -67,7 +67,6 @@ public class GameActivity extends AppCompatActivity {
             locationDescTextView.setText(locationObject.getString("desc"));
             LinearLayout buttonsContainer = findViewById(R.id.buttons_container);
             LinearLayout objectsContainer = findViewById(R.id.objects_container);
-            LinearLayout combatContainer = findViewById(R.id.combat_container);
 
             ImageView locationImage = findViewById(R.id.locationImage);
             if (locationObject.has("image")) {
@@ -78,20 +77,49 @@ public class GameActivity extends AppCompatActivity {
                 locationImage.setVisibility(View.GONE);
             }
             locationImage.invalidate();
-            JSONArray actions = locationObject.getJSONArray("actions");
             buttonsContainer.removeAllViews();
-            for (int i = 0; i < actions.length(); i++) {
-                JSONObject action = actions.getJSONObject(i);
-                String actionName = action.getString("action_name");
-                Button button = new Button(this);
-                button.setText(actionName);
-                int next = action.getInt("next");
-                button.setOnClickListener(view -> setLocation(next));
-                buttonsContainer.addView(button);
+            if(locationObject.has("actions"))
+            {
+                JSONArray actions = locationObject.getJSONArray("actions");
+
+                for (int i = 0; i < actions.length(); i++) {
+                    JSONObject action = actions.getJSONObject(i);
+                    String actionName = action.getString("action_name");
+                    Button button = new Button(this);
+                    button.setText(actionName);
+                    int next = action.getInt("next");
+                    button.setOnClickListener(view -> setLocation(next));
+                    buttonsContainer.addView(button);
+                }
+
+
             }
 
-            objectsContainer.removeAllViews();
+            if(locationObject.has("encounter"))
+            {
+                Button fightButton = new Button(this);
+                fightButton.setText(R.string.fightButton);
+                fightButton.setOnClickListener(view -> {
 
+                    JSONObject encounterInfo = null;
+                    try {
+                        encounterInfo = locationObject.getJSONObject("encounter");
+
+                    } catch (JSONException e) {throw new RuntimeException(e);}
+
+                    Intent gameActivityIntent = new Intent(this,activity_combat.class);
+                    gameActivityIntent.putExtra("encounterInfo",encounterInfo.toString());
+                    gameActivityIntent.putIntegerArrayListExtra("inventory",inventory);
+                    startActivity(gameActivityIntent);
+
+                });
+
+                buttonsContainer.addView(fightButton);
+
+            }
+
+
+            objectsContainer.removeAllViews();
             if(locationObject.has("objets"))
             {
 
@@ -120,28 +148,6 @@ public class GameActivity extends AppCompatActivity {
 
                 }
 
-                if(locationObject.has("encounter"))
-                {
-                    Button fightButton = new Button(this);
-                    fightButton.setText(R.string.fightButton);
-                    fightButton.setOnClickListener(view -> {
-
-                        JSONObject encounterInfo = null;
-                        try {
-                            encounterInfo = locationObject.getJSONObject("encounter");
-
-                        } catch (JSONException e) {throw new RuntimeException(e);}
-
-                        Intent gameActivityIntent = new Intent(this,activity_combat.class);
-                        gameActivityIntent.putExtra("encounterInfo",encounterInfo.toString());
-                        gameActivityIntent.putIntegerArrayListExtra("inventory",inventory);
-                        startActivity(gameActivityIntent);
-
-                    });
-
-                    combatContainer.addView(fightButton);
-
-                }
 
 
             }
