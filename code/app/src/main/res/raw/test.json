@@ -29,18 +29,21 @@
           "next": 3
         }
       ],
-      "encounters": [
+      "encounters":
         {
           "id": "encounter_001",
           "texte": "Un gobelin apparaît !",
+          "backgroundImage": "",
           "opposant": {
             "nom": "Gobelin",
-            "image": "https://example.com/images/gobelin.jpg"
+            "image": "https://example.com/images/gobelin.jpg",
+            "health": 10,
+            "damage": 0
           },
           "gagner": 3,
           "perdre": 0
         }
-      ],
+      ,
       "collectable": 2,
       "objets": [
         {
