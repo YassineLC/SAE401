@@ -13,4 +13,10 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <!-- Custom TextView style -->
+    <style name="AlkhemikalFontTextView" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/alkhemikal</item>
+        <item name="android:textSize">16sp</item>
+    </style>
 </resources>
