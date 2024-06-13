@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +28,7 @@ public class GameActivity extends AppCompatActivity {
     private int location = -1;
     private final ArrayList<Integer> inventory = new ArrayList<Integer>();
     private int collectable = 0;
+    private MediaPlayer mediaPlayer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +53,9 @@ public class GameActivity extends AppCompatActivity {
         setTitle(newTitle);
         location = startLocation;
         setLocation(location);
+        mediaPlayer = MediaPlayer.create(this, R.raw.sound_dark_fantasy);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
     }
     protected void setLocation(int newLoc) {
         location = newLoc;
@@ -194,5 +199,12 @@ public class GameActivity extends AppCompatActivity {
         }
 
         return collectable;
+    }
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 }
