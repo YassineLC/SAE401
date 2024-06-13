@@ -21,4 +21,6 @@ public class activity_combat extends AppCompatActivity {
             return insets;
         });
     }
+
+
 }

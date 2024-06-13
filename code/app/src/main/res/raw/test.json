@@ -29,7 +29,7 @@
           "next": 3
         }
       ],
-      "encounters":
+      "encounter":
         {
           "id": "encounter_001",
           "texte": "Un gobelin apparaît !",
@@ -69,18 +69,8 @@
           "next": 4
         }
       ],
-      "encounter": [
-        {
-          "id": "encounter_002",
-          "texte": "Un spectre vous attaque !",
-          "opposant": {
-            "nom": "Spectre",
-            "image": "https://example.com/images/spectre.jpg"
-          },
-          "gagner": 4,
-          "perdre": 0
-        }
-      ],
+
+
       "objets": [
         {
           "id": "objet_02",
@@ -106,12 +96,17 @@
       "desc": "Vous arrivez dans une salle sombre avec des symboles mystérieux gravés sur les murs. Une lumière étrange émane du centre.",
       "image": "place4",
       "final": false,
-      "actions": [
-        {
-          "action_name": "Inspecter la lumière",
-          "next": 6
-        }
-      ]
+      "encounter":
+      {
+        "id": "encounter_002",
+        "texte": "Un spectre vous attaque !",
+        "opposant": {
+          "nom": "Spectre",
+          "image": "drawable/place0.jpg"
+        },
+        "gagner": 4,
+        "perdre": 0
+      }
     },
     {
       "name": "Trésor Caché",
