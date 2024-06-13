@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,7 +25,7 @@ import java.util.Scanner;
 public class GameActivity extends AppCompatActivity {
     private JSONObject data;
     private int location = -1;
-    private final ArrayList<Integer> objectIds = new ArrayList<Integer>();
+    private final ArrayList<Integer> inventory = new ArrayList<Integer>();
     private int collectable = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,7 @@ public class GameActivity extends AppCompatActivity {
             locationDescTextView.setText(locationObject.getString("desc"));
             LinearLayout buttonsContainer = findViewById(R.id.buttons_container);
             LinearLayout objectsContainer = findViewById(R.id.objects_container);
+            LinearLayout combatContainer = findViewById(R.id.combat_container);
 
             ImageView locationImage = findViewById(R.id.locationImage);
             if (locationObject.has("image")) {
@@ -113,6 +115,29 @@ public class GameActivity extends AppCompatActivity {
 
                 }
 
+                if(locationObject.has("encounter"))
+                {
+                    Button fightButton = new Button(this);
+                    fightButton.setText(R.string.fightButton);
+                    fightButton.setOnClickListener(view -> {
+
+                        JSONObject encounterInfo = null;
+                        try {
+                            encounterInfo = locationObject.getJSONObject("encounter");
+
+                        } catch (JSONException e) {throw new RuntimeException(e);}
+
+                        Intent gameActivityIntent = new Intent(this,activity_combat.class);
+                        gameActivityIntent.putExtra("encounterInfo",encounterInfo.toString());
+                        gameActivityIntent.putIntegerArrayListExtra("inventory",inventory);
+                        startActivity(gameActivityIntent);
+
+                    });
+
+                    combatContainer.addView(fightButton);
+
+                }
+
 
             }
 
@@ -150,8 +175,8 @@ public class GameActivity extends AppCompatActivity {
     protected int collectObject(int idObject, int collectable, LinearLayout objectsContainer) {
         if (collectable != 0) {
             collectable -= 1;
-            objectIds.add(idObject);
-            Log.d("ajout",objectIds.toString());
+            inventory.add(idObject);
+            Log.d("ajout",inventory.toString());
 
             // Mettre à jour le nombre collectable affiché
             TextView collectableTextView = findViewById(R.id.collectableTextView);
