@@ -69,7 +69,7 @@
           "next": 4
         }
       ],
-      "encounters": [
+      "encounter": [
         {
           "id": "encounter_002",
           "texte": "Un spectre vous attaque !",
