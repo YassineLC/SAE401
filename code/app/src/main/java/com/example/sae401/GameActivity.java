@@ -206,6 +206,15 @@ public class GameActivity extends AppCompatActivity {
 
         return collectable;
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        }
+    }
+
     protected void onDestroy() {
         super.onDestroy();
         if (mediaPlayer != null) {
@@ -213,4 +222,13 @@ public class GameActivity extends AppCompatActivity {
             mediaPlayer = null;
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
+        }
+    }
+
 }
