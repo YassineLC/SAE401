@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity_combat">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="63dp"
+        tools:layout_editor_absoluteY="0dp"
+        android:background="@drawable/ic_launcher_background">
+
+        <LinearLayout
+            android:id="@+id/capacitiesLayout"
+            android:layout_width="413dp"
+            android:layout_height="176dp"
+            android:background="@color/white"
+            android:backgroundTint="@color/white"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.615"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"></LinearLayout>
+
+        <ImageView
+            android:id="@+id/playerImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="48dp"
+            app:layout_constraintBottom_toTopOf="@+id/capacitiesLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.095"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <ImageView
+            android:id="@+id/mobImage"
+            android:layout_width="121dp"
+            android:layout_height="132dp"
+            app:layout_constraintBottom_toTopOf="@+id/playerImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.868"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.178"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <LinearLayout
+            android:id="@+id/mobInfos"
+            android:layout_width="163dp"
+            android:layout_height="115dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/playerImage"
+            app:layout_constraintEnd_toStartOf="@+id/mobImage"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/mobName"
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                android:text="TextView" />
+
+            <ProgressBar
+                android:id="@+id/mobHealth"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="28dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/playerInfos"
+            android:layout_width="163dp"
+            android:layout_height="115dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/capacitiesLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.591"
+            app:layout_constraintStart_toEndOf="@+id/playerImage"
+            app:layout_constraintTop_toBottomOf="@+id/mobImage"
+            app:layout_constraintVertical_bias="0.612">
+
+            <TextView
+                android:id="@+id/playerName"
+                android:layout_width="match_parent"
+                android:layout_height="37dp"
+                android:text="TextView" />
+
+            <ProgressBar
+                android:id="@+id/playerhealth"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:indeterminateBehavior="repeat" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
