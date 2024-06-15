@@ -9,4 +9,7 @@
     <string name="language_settings">Language</string>
     <string name="return_settings_button">Return</string>
     <string name="fightButton">Fight</string>
+    <string name="restart_button">Play again</string>
+    <string name="exit_button">Exit</string>
+    <string name="ConfirmExit">Do you really want to quit ?</string>
 </resources>
