@@ -31,7 +31,10 @@ public class EndActivity extends AppCompatActivity {
         Button restart = findViewById(R.id.restartButton);
         Button exit = findViewById(R.id.exitButton);
 
-        restart.setOnClickListener(v -> finish());
+        restart.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        });
 
         exit.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
