@@ -107,7 +107,7 @@ public class GameActivity extends AppCompatActivity {
 
                     } catch (JSONException e) {throw new RuntimeException(e);}
 
-                    Intent gameActivityIntent = new Intent(this,activity_combat.class);
+                    Intent gameActivityIntent = new Intent(this, ActivityCombat.class);
                     gameActivityIntent.putExtra("encounterInfo",encounterInfo.toString());
                     gameActivityIntent.putIntegerArrayListExtra("inventory",inventory);
                     startActivity(gameActivityIntent);
@@ -154,14 +154,19 @@ public class GameActivity extends AppCompatActivity {
 
 
 
-            boolean isFinal = locationObject.getBoolean("final");
+/*            boolean isFinal = locationObject.getBoolean("final");
             if (isFinal) {
                 Button button = new Button(this);
                 button.setText(getString(R.string.won_game));
                 button.setOnClickListener(view -> finish());
                 buttonsContainer.addView(button);
-            }
+            }*/
 
+            boolean isFinal = locationObject.getBoolean("final");
+            if (isFinal) {
+                Intent intent = new Intent(this, EndActivity.class);
+                startActivity(intent);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
