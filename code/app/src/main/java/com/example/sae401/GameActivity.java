@@ -107,7 +107,7 @@ public class GameActivity extends AppCompatActivity {
 
                     } catch (JSONException e) {throw new RuntimeException(e);}
 
-                    Intent gameActivityIntent = new Intent(this, ActivityCombat.class);
+                    Intent gameActivityIntent = new Intent(this, CombatActivity.class);
                     gameActivityIntent.putExtra("encounterInfo",encounterInfo.toString());
                     gameActivityIntent.putIntegerArrayListExtra("inventory",inventory);
                     startActivity(gameActivityIntent);

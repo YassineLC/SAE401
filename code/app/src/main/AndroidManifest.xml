@@ -15,7 +15,7 @@
             android:name=".EndActivity"
             android:exported="false" />
         <activity
-            android:name=".ActivityCombat"
+            android:name=".CombatActivity"
             android:exported="false" />
         <activity
             android:name=".GameActivity"
