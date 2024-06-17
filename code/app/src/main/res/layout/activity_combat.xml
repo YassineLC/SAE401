@@ -73,7 +73,9 @@
                 android:id="@+id/mobHealth"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
-                android:layout_height="28dp" />
+                android:layout_height="40dp"
+                android:maxHeight="20dip"
+                android:progressTint="#FF0000" />
 
         </LinearLayout>
 
@@ -100,7 +102,8 @@
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="28dp"
-                android:indeterminateBehavior="repeat" />
+                android:indeterminateBehavior="repeat"
+                android:progressTint="#FF0000" />
 
         </LinearLayout>
 
