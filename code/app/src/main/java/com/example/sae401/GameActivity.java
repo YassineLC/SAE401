@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +28,7 @@ public class GameActivity extends AppCompatActivity {
     private int location = -1;
     private final ArrayList<Integer> inventory = new ArrayList<Integer>();
     private int collectable = 0;
+    private MediaPlayer mediaPlayer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +53,9 @@ public class GameActivity extends AppCompatActivity {
         setTitle(newTitle);
         location = startLocation;
         setLocation(location);
+        mediaPlayer = MediaPlayer.create(this, R.raw.sound_dark_fantasy);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
     }
     protected void setLocation(int newLoc) {
         location = newLoc;
@@ -102,7 +107,7 @@ public class GameActivity extends AppCompatActivity {
 
                     } catch (JSONException e) {throw new RuntimeException(e);}
 
-                    Intent gameActivityIntent = new Intent(this,activity_combat.class);
+                    Intent gameActivityIntent = new Intent(this, ActivityCombat.class);
                     gameActivityIntent.putExtra("encounterInfo",encounterInfo.toString());
                     gameActivityIntent.putIntegerArrayListExtra("inventory",inventory);
                     startActivity(gameActivityIntent);
@@ -149,14 +154,19 @@ public class GameActivity extends AppCompatActivity {
 
 
 
-            boolean isFinal = locationObject.getBoolean("final");
+/*            boolean isFinal = locationObject.getBoolean("final");
             if (isFinal) {
                 Button button = new Button(this);
                 button.setText(getString(R.string.won_game));
                 button.setOnClickListener(view -> finish());
                 buttonsContainer.addView(button);
-            }
+            }*/
 
+            boolean isFinal = locationObject.getBoolean("final");
+            if (isFinal) {
+                Intent intent = new Intent(this, EndActivity.class);
+                startActivity(intent);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -201,4 +211,29 @@ public class GameActivity extends AppCompatActivity {
 
         return collectable;
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        }
+    }
+
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
+        }
+    }
+
 }
