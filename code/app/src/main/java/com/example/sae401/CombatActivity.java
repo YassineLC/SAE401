@@ -3,6 +3,7 @@ package com.example.sae401;
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
@@ -27,8 +28,7 @@ public class CombatActivity extends AppCompatActivity
     private  DatabaseHelper dbHelper;
     private ArrayList<JSONObject> inventoryObjects ;
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_combat);
@@ -43,7 +43,7 @@ public class CombatActivity extends AppCompatActivity
 
         ArrayList<Integer> inventory = getIntent().getIntegerArrayListExtra("inventory");
 
-        Log.d("inventory combat : ",inventory.toString());
+        Log.d("inventory combat : ", inventory.toString());
 
         // obtenir le json des items
         Resources res = this.getResources();
@@ -54,14 +54,14 @@ public class CombatActivity extends AppCompatActivity
 
         try {
             JSONObject items = new JSONObject(jsonString);
-           JSONObject item ;
-           for(int i =0 ; i<inventory.size();i++){
+            JSONObject item;
+            for (int i = 0; i < inventory.size(); i++) {
 
-               item = items.getJSONObject(String.valueOf(inventory.get(i)));
-               inventoryObjects.add(item);
+                item = items.getJSONObject(String.valueOf(inventory.get(i)));
+                inventoryObjects.add(item);
 
-           }
-        }catch (JSONException e) {
+            }
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
@@ -81,8 +81,18 @@ public class CombatActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        // Passer null pour les colonnes pour retourner toutes les colonnes
-        Cursor cursor = dbHelper.query("my_table", null, null, null, null, null, null);
+        Cursor cursor = dbHelper.query("sqlite_master", new String[]{"name"}, "type='table'", null, null, null, null);
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    String tableName = cursor.getString(0);
+                    Log.d("DatabaseLogs", "Table: " + tableName);
+                } while (cursor.moveToNext());
+            }
+        } catch (SQLException e) {
+            Log.e("DatabaseLogs", "Error while trying to get table names", e);
+        }
+
 
         if (cursor.moveToFirst()) {
             do {
