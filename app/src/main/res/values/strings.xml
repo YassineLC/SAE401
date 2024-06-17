@@ -1,9 +1,0 @@
-<resources>
-    <string name="app_name">Explorer</string>
-    <string name="launch_game">Start game</string>
-    <string name="app_title_name">%1$s: %2$s</string>
-    <string name="won_game">Good game!</string>
-    <string name="restart_game">Return to home</string>
-    <string name="exit_game">Exit</string>
-    <string name="confirmationToExit">Do you really want to quit the game ?</string>
-</resources>
