@@ -2,7 +2,7 @@ package com.example.sae401;
 
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
-import android.net.Uri;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
@@ -11,20 +11,20 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.database.sae401.DatabaseHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class activity_combat extends AppCompatActivity
+public class CombatActivity extends AppCompatActivity
 {
+    private  DatabaseHelper dbHelper;
     private ArrayList<JSONObject> inventoryObjects ;
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -72,7 +72,38 @@ public class activity_combat extends AppCompatActivity
         }
 
 
-    };
+        dbHelper = new DatabaseHelper(this);
+
+        try {
+            dbHelper.createDatabase();
+            dbHelper.openDatabase();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Passer null pour les colonnes pour retourner toutes les colonnes
+        Cursor cursor = dbHelper.query("my_table", null, null, null, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                // Parcourir les colonnes
+                int columnCount = cursor.getColumnCount();
+                StringBuilder rowString = new StringBuilder();
+                for (int i = 0; i < columnCount; i++) {
+                    String columnName = cursor.getColumnName(i);
+                    String value = cursor.getString(i);
+                    rowString.append(columnName).append(": ").append(value).append(" | ");
+                }
+                // Afficher la ligne dans les logs
+                Log.d("items db", rowString.toString());
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        dbHelper.close();
+    }
+
+
 
 
     protected void initFight(ArrayList<JSONObject> inventory,JSONObject encounter) throws JSONException {
