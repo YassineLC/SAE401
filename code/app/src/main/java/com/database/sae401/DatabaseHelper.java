@@ -13,7 +13,7 @@ import java.io.OutputStream;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "sae.db";
-    private static final String DATABASE_PATH = "./code/app/src/main/assets/";
+    private static final String DATABASE_PATH = "/code/app/src/main/assets/";
     private static final int DATABASE_VERSION = 1;
     private final Context myContext;
     private SQLiteDatabase myDatabase;
