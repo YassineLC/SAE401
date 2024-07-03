@@ -5,14 +5,34 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ActivityCombat">
+    tools:context=".CombatActivity">
+
+    <ImageView
+        android:id="@+id/backgroundGif"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center"
+        android:adjustViewBounds="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- View pour assombrir le GIF -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#BF000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="63dp"
-        tools:layout_editor_absoluteY="0dp"
-        android:background="@drawable/ic_launcher_background">
+        android:background="@android:color/transparent">
 
         <LinearLayout
             android:id="@+id/capacitiesLayout"
@@ -26,7 +46,7 @@
             app:layout_constraintHorizontal_bias="0.615"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"></LinearLayout>
+            app:layout_constraintVertical_bias="1.0" />
 
         <ImageView
             android:id="@+id/playerImage"
@@ -95,7 +115,8 @@
                 android:id="@+id/playerName"
                 android:layout_width="match_parent"
                 android:layout_height="37dp"
-                android:text="TextView" />
+                android:text="TextView"
+                android:textColor="@color/white" />
 
             <ProgressBar
                 android:id="@+id/playerhealth"

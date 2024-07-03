@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.database.sae401.DatabaseHelper;
 
 import org.json.JSONException;
@@ -32,6 +33,11 @@ public class CombatActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_combat);
+
+        ImageView backgroundGif = findViewById(R.id.backgroundGif);
+        Glide.with(this)
+                .load(R.drawable.background1)
+                .into(backgroundGif);
 
         JSONObject encounter;
         try {
