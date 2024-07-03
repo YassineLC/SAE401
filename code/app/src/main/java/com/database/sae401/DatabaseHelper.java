@@ -1,21 +1,19 @@
 package com.database.sae401;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import com.example.sae401.R;
-
-import java.io.FileOutputStream;
+import android.content.Context;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "sae.db";
+    private static final String DATABASE_PATH = "/code/app/src/main/assets/";
     private static final int DATABASE_VERSION = 1;
     private final Context myContext;
     private SQLiteDatabase myDatabase;
@@ -39,7 +37,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         boolean dbExist = checkDatabase();
         if (!dbExist) {
             this.getReadableDatabase();
-            this.close();
             try {
                 copyDatabase();
             } catch (IOException e) {
@@ -51,7 +48,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private boolean checkDatabase() {
         SQLiteDatabase checkDB = null;
         try {
-            String myPath = myContext.getDatabasePath(DATABASE_NAME).getPath();
+            String myPath = DATABASE_PATH + DATABASE_NAME;
             checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
         } catch (SQLException e) {
             // La base de données n'existe pas encore
@@ -63,15 +60,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     private void copyDatabase() throws IOException {
-        InputStream myInput = myContext.getResources().openRawResource(R.raw.sae);  // Ouvrir depuis res/raw
-        String outFileName = myContext.getDatabasePath(DATABASE_NAME).getPath();
-
-        // Créer le répertoire si nécessaire
-        java.io.File file = new java.io.File(myContext.getDatabasePath(DATABASE_NAME).getParent());
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-
+        InputStream myInput = myContext.getAssets().open(DATABASE_NAME);
+        String outFileName = DATABASE_PATH + DATABASE_NAME;
         OutputStream myOutput = new FileOutputStream(outFileName);
         byte[] buffer = new byte[1024];
         int length;
@@ -84,7 +74,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void openDatabase() throws SQLException {
-        String myPath = myContext.getDatabasePath(DATABASE_NAME).getPath();
+        String myPath = DATABASE_PATH + DATABASE_NAME;
         myDatabase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
     }
 
@@ -99,5 +89,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor query(String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy) {
         return myDatabase.query(table, columns, selection, selectionArgs, groupBy, having, orderBy);
     }
-
 }

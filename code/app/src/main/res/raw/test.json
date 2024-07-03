@@ -47,9 +47,7 @@
       "collectable": 2,
       "objets": [
         {
-          "id": 1,
-          "description": "Une dague rouillée",
-          "icone": "https://example.com/images/dague.png"
+          "id": 1
         },
         {
           "id": 95,
