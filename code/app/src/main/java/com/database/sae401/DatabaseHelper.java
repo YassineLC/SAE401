@@ -48,7 +48,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private boolean checkDatabase() {
         SQLiteDatabase checkDB = null;
         try {
-            String myPath = DATABASE_PATH + DATABASE_NAME;
+            String myPath = myContext.getDatabasePath(DATABASE_NAME).getPath();
             checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
         } catch (SQLException e) {
             // La base de données n'existe pas encore
@@ -74,7 +74,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void openDatabase() throws SQLException {
-        String myPath = DATABASE_PATH + DATABASE_NAME;
+        String myPath = myContext.getDatabasePath(DATABASE_NAME).getPath();
         myDatabase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
     }
 
