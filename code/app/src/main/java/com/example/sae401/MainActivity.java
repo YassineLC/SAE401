@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void startGameActivity(View view) {
         Intent intent;
-        intent = new Intent(this, GameActivity.class);
+        intent = new Intent(this, SelectActivity.class);
         intent.putExtra("fileName", "test");
         startActivity(intent);
     }

@@ -18,6 +18,9 @@
             android:name=".CombatActivity"
             android:exported="false" />
         <activity
+            android:name=".SelectActivity"
+            android:exported="true" />
+        <activity
             android:name=".GameActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
