@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,15 +16,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.database.sae401.DatabaseHelper;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class GameActivity extends AppCompatActivity {
+    
+    private DatabaseHelper db ; 
     private JSONObject data;
     private int location = -1;
     private final ArrayList<Integer> inventory = new ArrayList<Integer>();
@@ -56,6 +62,18 @@ public class GameActivity extends AppCompatActivity {
         mediaPlayer = MediaPlayer.create(this, R.raw.sound_dark_fantasy);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
+
+
+
+        db = new DatabaseHelper(this);
+
+        try {
+            db.createDatabase();
+            db.openDatabase();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
     protected void setLocation(int newLoc) {
         location = newLoc;
@@ -101,14 +119,15 @@ public class GameActivity extends AppCompatActivity {
                 fightButton.setText(R.string.fightButton);
                 fightButton.setOnClickListener(view -> {
 
-                    JSONObject encounterInfo = null;
+                    int encounterId = 0;
                     try {
-                        encounterInfo = locationObject.getJSONObject("encounter");
+                        encounterId = locationObject.getJSONObject("encounter").getInt("id");
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
 
-                    } catch (JSONException e) {throw new RuntimeException(e);}
-
-                    Intent gameActivityIntent = new Intent(this, ActivityCombat.class);
-                    gameActivityIntent.putExtra("encounterInfo",encounterInfo.toString());
+                    Intent gameActivityIntent = new Intent(this, CombatActivity.class);
+                    gameActivityIntent.putExtra("encounterId",encounterId);
                     gameActivityIntent.putIntegerArrayListExtra("inventory",inventory);
                     startActivity(gameActivityIntent);
 
@@ -131,6 +150,36 @@ public class GameActivity extends AppCompatActivity {
                     collectableTextView.setText("Remaining : "+String.valueOf(collectable));
 
                     JSONObject objet = objets.getJSONObject(i);
+                    String[] id = {String.valueOf(objet.getInt("id"))};
+                    String[] icon = {"icon"};
+                    Cursor cursor = db.query("items",icon, "id = ? ", id, null, null, null);
+                    if (cursor != null) {
+                        if (cursor.moveToFirst()) {
+                            // Récupérer la valeur du champ "icon"
+                            String iconName = cursor.getString(cursor.getColumnIndexOrThrow("icon"));
+                            Log.d("icontest",iconName);
+                            ImageView imageView = new ImageView(this);
+                            imageView.setId(objet.getInt("id"));
+                            imageView.setLayoutParams(new LinearLayout.LayoutParams(32, 32));
+                            int resID = getResources().getIdentifier("sword_black", "drawable", getPackageName());
+                            imageView.setImageResource(resID);
+
+                            objectsContainer.addView(imageView);
+                            imageView.setOnClickListener(view -> {
+                                try {
+                                    collectable = collectObject(objet.getInt("id"), collectable, objectsContainer);
+                                    Log.d("id",String.valueOf(objet.getInt("id")));
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                // Mettre à jour la valeur de collectable
+                                // Vous pouvez également mettre à jour l'affichage du nombre collectable ici si nécessaire
+                            });
+                        }
+                        cursor.close();
+                    }
+
+                    /*
                     String objectName = objet.getString("description");
                     Button button = new Button(this);
                     button.setText(objectName);
@@ -145,9 +194,8 @@ public class GameActivity extends AppCompatActivity {
                         // Mettre à jour la valeur de collectable
                         // Vous pouvez également mettre à jour l'affichage du nombre collectable ici si nécessaire
                     });
-
+                    */
                 }
-
 
 
             }
@@ -192,15 +240,15 @@ public class GameActivity extends AppCompatActivity {
         if (collectable != 0) {
             collectable -= 1;
             inventory.add(idObject);
-            Log.d("ajout",inventory.toString());
+            Log.d("ajout", inventory.toString());
 
             // Mettre à jour le nombre collectable affiché
             TextView collectableTextView = findViewById(R.id.collectableTextView);
-            collectableTextView.setText("Remaining : "+String.valueOf(collectable));
+            collectableTextView.setText("Remaining : " + String.valueOf(collectable));
 
             // Mettre à jour l'affichage des objets
-            Button button = objectsContainer.findViewById(idObject);
-            objectsContainer.removeView(button);
+            ImageView imageView = objectsContainer.findViewById(idObject);
+            objectsContainer.removeView(imageView);
 
             // Vérifier si tous les objets collectables ont été collectés
             if (collectable == 0) {
@@ -222,6 +270,7 @@ public class GameActivity extends AppCompatActivity {
 
     protected void onDestroy() {
         super.onDestroy();
+        db.close();
         if (mediaPlayer != null) {
             mediaPlayer.release();
             mediaPlayer = null;

@@ -31,30 +31,16 @@
       ],
       "encounter":
         {
-          "id": "encounter_001",
-          "texte": "Un gobelin apparaît !",
-          "backgroundImage": "",
-          "opposant": {
-            "nom": "Gobelin",
-            "image": "https://example.com/images/gobelin.jpg",
-            "health": 10,
-            "damage": 0
-          },
-          "gagner": 3,
-          "perdre": 0
+          "id": "1"
         }
       ,
       "collectable": 2,
       "objets": [
         {
-          "id": 1,
-          "description": "Une dague rouillée",
-          "icone": "https://example.com/images/dague.png"
+          "id": 1
         },
         {
-          "id": 95,
-          "description": "yassine",
-          "icone": "https://example.com/images/dague.png"
+          "id": 1
         }
       ]
     },
