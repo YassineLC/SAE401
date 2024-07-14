@@ -119,14 +119,15 @@ public class GameActivity extends AppCompatActivity {
                 fightButton.setText(R.string.fightButton);
                 fightButton.setOnClickListener(view -> {
 
-                    JSONObject encounterInfo = null;
+                    int encounterId = 0;
                     try {
-                        encounterInfo = locationObject.getJSONObject("encounter");
-
-                    } catch (JSONException e) {throw new RuntimeException(e);}
+                        encounterId = locationObject.getJSONObject("encounter").getInt("id");
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
 
                     Intent gameActivityIntent = new Intent(this, CombatActivity.class);
-                    gameActivityIntent.putExtra("encounterInfo",encounterInfo.toString());
+                    gameActivityIntent.putExtra("encounterId",encounterId);
                     gameActivityIntent.putIntegerArrayListExtra("inventory",inventory);
                     startActivity(gameActivityIntent);
 
@@ -269,6 +270,7 @@ public class GameActivity extends AppCompatActivity {
 
     protected void onDestroy() {
         super.onDestroy();
+        db.close();
         if (mediaPlayer != null) {
             mediaPlayer.release();
             mediaPlayer = null;
