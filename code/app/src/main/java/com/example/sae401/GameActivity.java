@@ -38,32 +38,39 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("APP","CREATE");
+        Log.d("APP", "CREATE");
         setContentView(R.layout.activity_game);
-        String fileNameWithoutExtension = getIntent().getStringExtra("fileName");
-        Resources res = this.getResources();
-        @SuppressLint("DiscouragedApi") int sourceFile = res.getIdentifier(fileNameWithoutExtension, "raw", this.getPackageName());
-        String worldTitle="";
-        int startLocation = 0;
-        InputStream inputStream = getResources().openRawResource(sourceFile);
-        Scanner scanner = new Scanner(inputStream);
-        String jsonString = scanner.useDelimiter("\\A").next();
-        try {
-            data = new JSONObject(jsonString);
-            worldTitle = data.getString("title");
-            startLocation = data.getInt("start");
-        } catch (JSONException e) {
-            e.printStackTrace();
+
+        // Obtenez l'extra pour la nouvelle location
+        int newLocation = getIntent().getIntExtra("newLocation", -1);
+        if (newLocation != -1) {
+            setLocation(newLocation);
+        } else {
+            // Continuez avec l'initialisation normale si newLocation n'est pas passé
+            String fileNameWithoutExtension = getIntent().getStringExtra("fileName");
+            Resources res = this.getResources();
+            @SuppressLint("DiscouragedApi") int sourceFile = res.getIdentifier(fileNameWithoutExtension, "raw", this.getPackageName());
+            String worldTitle = "";
+            int startLocation = 0;
+            InputStream inputStream = getResources().openRawResource(sourceFile);
+            Scanner scanner = new Scanner(inputStream);
+            String jsonString = scanner.useDelimiter("\\A").next();
+            try {
+                data = new JSONObject(jsonString);
+                worldTitle = data.getString("title");
+                startLocation = data.getInt("start");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            String newTitle = String.format(getString(R.string.app_title_name), getString(R.string.app_name), worldTitle);
+            setTitle(newTitle);
+            location = startLocation;
+            setLocation(location);
         }
-        String newTitle = String.format(getString(R.string.app_title_name),getString(R.string.app_name),worldTitle);
-        setTitle(newTitle);
-        location = startLocation;
-        setLocation(location);
+
         mediaPlayer = MediaPlayer.create(this, R.raw.sound_dark_fantasy);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
-
-
 
         db = new DatabaseHelper(this);
 
@@ -73,7 +80,6 @@ public class GameActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
     protected void setLocation(int newLoc) {
         location = newLoc;
@@ -126,8 +132,10 @@ public class GameActivity extends AppCompatActivity {
                         throw new RuntimeException(e);
                     }
 
+                    int playerId = getIntent().getIntExtra("character_id",0);
                     Intent gameActivityIntent = new Intent(this, CombatActivity.class);
                     gameActivityIntent.putExtra("encounterId",encounterId);
+                    gameActivityIntent.putExtra("playerId",playerId);
                     gameActivityIntent.putIntegerArrayListExtra("inventory",inventory);
                     startActivity(gameActivityIntent);
 
