@@ -2,11 +2,17 @@ package com.example.sae401;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
+import android.database.SQLException;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.database.sae401.DatabaseHelper;
+
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity {
+    DatabaseHelper mDBHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -16,6 +22,16 @@ public class MainActivity extends AppCompatActivity {
 
         button.setOnClickListener(this::startGameActivity);
         settingsButton.setOnClickListener(this::startSettingsActivity);
+
+        mDBHelper = new DatabaseHelper(this);
+
+        try {
+            mDBHelper.createDatabase();
+        } catch (IOException ioe) {
+            throw new Error("Unable to create database");
+        }
+
+        mDBHelper.openDatabase();
     }
 
     public void startGameActivity(View view) {
