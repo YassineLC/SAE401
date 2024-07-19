@@ -33,12 +33,12 @@ public class EndActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             builder.setTitle("Confirm").setMessage(R.string.ConfirmExit);
 
-            builder.setPositiveButton("Yes", (dialog, which) -> {
+            builder.setPositiveButton("Oui", (dialog, which) -> {
                 Intent intent = new Intent(Intent.ACTION_MAIN);
                 intent.addCategory(Intent.CATEGORY_HOME);
                 startActivity(intent);
             });
-            builder.setNegativeButton("No", (dialog, which) -> dialog.cancel());
+            builder.setNegativeButton("Non", (dialog, which) -> dialog.cancel());
             builder.show();
         });
     }
