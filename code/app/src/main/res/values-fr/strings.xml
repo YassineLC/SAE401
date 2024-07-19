@@ -13,4 +13,13 @@
     <string name="restart_button">Rejouer</string>
     <string name="exit_button">Sortir</string>
     <string name="ConfirmExit">Voulez-vous vraiment quitter ?</string>
+    <string name="combat_question">Que voulez-vous faire ?</string>
+    <string name="choose_character">Choisissez votre personnage</string>
+    <string name="damage_character">"Dégâts: "</string>
+    <string name="health_character">"PV: "</string>
+    <string name="confirm_selection">Confirmer la sélection</string>
+    <string name="dialog_title">Confirmation</string>
+    <string name="dialog_message">Êtes-vous sûr de vouloir commencer avec ce personnage ?</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
 </resources>

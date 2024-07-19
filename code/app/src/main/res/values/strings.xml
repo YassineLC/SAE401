@@ -12,4 +12,13 @@
     <string name="restart_button">Play again</string>
     <string name="exit_button">Exit</string>
     <string name="ConfirmExit">Do you really want to quit ?</string>
+    <string name="combat_question">What do you want to do ?</string>
+    <string name="choose_character">Choose your character</string>
+    <string name="damage_character">"Damage: "</string>
+    <string name="health_character">"HP: "</string>
+    <string name="confirm_selection">Confirm selection</string>
+    <string name="dialog_title">Confirmation</string>
+    <string name="dialog_message">Are you sure you want to start with this character ?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

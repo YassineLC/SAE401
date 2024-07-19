@@ -81,44 +81,54 @@ public class SelectActivity extends AppCompatActivity {
         int selectedDamage = 0;
         String selectedIcon = null;
 
-        if (selectedCharacterLayout == character1Layout) {
-            selectedId = 1;
-            selectedName = character1Name.getText().toString();
-            selectedHealth = Integer.parseInt(character1Pv.getText().toString().replace("PV: ", ""));
-            selectedDamage = Integer.parseInt(character1Damage.getText().toString().replace("Dégâts: ", ""));
-            selectedIcon = "archer";
-        } else if (selectedCharacterLayout == character2Layout) {
-            selectedId = 2;
-            selectedName = character2Name.getText().toString();
-            selectedHealth = Integer.parseInt(character2Pv.getText().toString().replace("PV: ", ""));
-            selectedDamage = Integer.parseInt(character2Damage.getText().toString().replace("Dégâts: ", ""));
-            selectedIcon = "warrior";
-        } else if (selectedCharacterLayout == character3Layout) {
-            selectedId = 3; // Remplacez ceci par l'ID réel du personnage 3
-            selectedName = character3Name.getText().toString();
-            selectedHealth = Integer.parseInt(character3Pv.getText().toString().replace("PV: ", ""));
-            selectedDamage = Integer.parseInt(character3Damage.getText().toString().replace("Dégâts: ", ""));
-            selectedIcon = "mage";
+        Cursor cursor = getCharacterCursor();
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                @SuppressLint("Range") int id = cursor.getInt(cursor.getColumnIndex("id"));
+                if ((selectedCharacterLayout == character1Layout && id == 1) ||
+                        (selectedCharacterLayout == character2Layout && id == 2) ||
+                        (selectedCharacterLayout == character3Layout && id == 3)) {
+
+                    selectedId = id;
+                    @SuppressLint("Range") String name = cursor.getString(cursor.getColumnIndex("name")).trim();
+                    @SuppressLint("Range") int health = cursor.getInt(cursor.getColumnIndex("health"));
+                    @SuppressLint("Range") int damage = cursor.getInt(cursor.getColumnIndex("damage"));
+                    @SuppressLint("Range") String icon = cursor.getString(cursor.getColumnIndex("icon")).trim();
+
+                    selectedName = name;
+                    selectedHealth = health;
+                    selectedDamage = damage;
+                    selectedIcon = icon;
+
+                    break;
+                }
+            }
+            cursor.close();
         }
 
-        int finalSelectedId = selectedId;
-        String finalSelectedName = selectedName;
-        int finalSelectedHealth = selectedHealth;
-        int finalSelectedDamage = selectedDamage;
-        String finalSelectedIcon = selectedIcon;
-
-        new AlertDialog.Builder(this)
-                .setTitle("Confirmation")
-                .setMessage("Êtes-vous sûr de vouloir commencer avec ce personnage ?")
-                .setPositiveButton("Oui", (dialog, which) -> {
-                    Intent intent = new Intent(SelectActivity.this, GameActivity.class);
-                    intent.putExtra("fileName", "test");
-                    intent.putExtra("character_id", finalSelectedId);
-                    startActivity(intent);
-                })
-                .setNegativeButton("Non", null)
-                .show();
+        if (selectedId != -1) {
+            int finalSelectedId = selectedId;
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.dialog_title)
+                    .setMessage(R.string.dialog_message)
+                    .setPositiveButton(R.string.yes, (dialog, which) -> {
+                        Intent intent = new Intent(SelectActivity.this, GameActivity.class);
+                        intent.putExtra("fileName", "test");
+                        intent.putExtra("character_id", finalSelectedId);
+                        startActivity(intent);
+                    })
+                    .setNegativeButton(R.string.no, null)
+                    .show();
+        }
     }
+
+    private Cursor getCharacterCursor() {
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        return db.query("character", null, null, null, null, null, null);
+    }
+
 
     private void loadCharactersFromDatabase() {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
@@ -139,20 +149,20 @@ public class SelectActivity extends AppCompatActivity {
                 switch (count) {
                     case 0:
                         character1Name.setText(name);
-                        character1Pv.setText("PV: " + health);
-                        character1Damage.setText("Dégâts: " + damage);
+                        character1Pv.append(String.valueOf(health));
+                        character1Damage.append(String.valueOf(damage));
                         Glide.with(this).load(imageUri).into(character1Image);
                         break;
                     case 1:
                         character2Name.setText(name);
-                        character2Pv.setText("PV: " + health);
-                        character2Damage.setText("Dégâts: " + damage);
+                        character2Pv.append(String.valueOf(health));
+                        character2Damage.append(String.valueOf(damage));
                         Glide.with(this).load(imageUri).into(character2Image);
                         break;
                     case 2:
                         character3Name.setText(name);
-                        character3Pv.setText("PV: " + health);
-                        character3Damage.setText("Dégâts: " + damage);
+                        character3Pv.append(String.valueOf(health));
+                        character3Damage.append(String.valueOf(damage));
                         Glide.with(this).load(imageUri).into(character3Image);
                         break;
                 }

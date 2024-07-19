@@ -303,7 +303,7 @@ public class CombatActivity extends AppCompatActivity {
 
     private long calculateDelay(String text) {
 
-        return text.length() * 50;
+        return text.length() * 27;
     }
 
     protected String getObjectType(int id) {
