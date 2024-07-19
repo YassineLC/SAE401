@@ -4,9 +4,7 @@ import static com.example.sae401.TextAnimator.animateText;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -22,16 +20,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.database.sae401.DatabaseHelper;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class CombatActivity extends AppCompatActivity {
     private DatabaseHelper db;
     private ArrayList<Integer> inventoryObjects;
     private boolean isPlayerTurn = true;
+    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,6 +201,11 @@ public class CombatActivity extends AppCompatActivity {
         return val;
     }
 
+    private void animateTextWithDelay(TextView textView, String text, long delay) {
+        animateText(textView, text);
+        handler.postDelayed(() -> setButtonsEnabled(true), delay);
+    }
+
     protected void useObject(Encounter encounterSituation, TextView mobHealthText, TextView playerHealthText, Character mob, Character player, String objectType, int objectValue, String objectName, ProgressBar mobHealth, ProgressBar playerHealth, int mobMaxHealth, int playerMaxHealth) throws InterruptedException {
         Log.d("attack", "attaque");
         Log.d("value when click", String.valueOf(objectValue));
@@ -216,72 +218,92 @@ public class CombatActivity extends AppCompatActivity {
         }
 
         isPlayerTurn = false;
-        setButtonsEnabled(false);
+        setButtonsEnabled(false);  // Désactiver les boutons ici
 
         if (objectType.equals("weapon")) {
             String displayText = "Vous attaquez avec " + objectName + " et infligez " + objectValue + " de dégâts";
-            animateText(texte, displayText);
-            Thread.sleep(300);
-            mob.setHealth(mob.getHealth() - objectValue);
-            mobHealthText.setText("PV: " + mob.getHealth() + "/" + mobMaxHealth);
-            mobHealth.setProgress(refreshProgressBar(mob.getHealth(), mobMaxHealth));
+            animateTextWithDelay(texte, displayText, calculateDelay(displayText));
+            handler.postDelayed(() -> {
+                mob.setHealth(mob.getHealth() - objectValue);
+                mobHealthText.setText("PV: " + mob.getHealth() + "/" + mobMaxHealth);
+                mobHealth.setProgress(refreshProgressBar(mob.getHealth(), mobMaxHealth));
 
-            if (mob.getHealth() <= 0) {
-                String victoryText = "Vous avez vaincu " + mob.getCharName();
-                animateText(texte, victoryText);
-                mob.setHealth(0);
-                mobHealthText.setText("PV: 0/" + mobMaxHealth);
-                mobHealth.setProgress(0);
-                Thread.sleep(500);
-                int idNext = encounterSituation.getNext();
-                Intent intent = new Intent(this, GameActivity.class);
-                intent.putExtra("newLocation", idNext);
-                startActivity(intent);
-                finish();
-                return;
-            }
+                if (mob.getHealth() <= 0) {
+                    String victoryText = "Vous avez vaincu " + mob.getCharName();
+                    animateTextWithDelay(texte, victoryText, calculateDelay(victoryText));
+                    handler.postDelayed(() -> {
+                        mob.setHealth(0);
+                        mobHealthText.setText("PV: 0/" + mobMaxHealth);
+                        mobHealth.setProgress(0);
+                        new Handler().postDelayed(() -> {
+                            int idNext = encounterSituation.getNext();
+                            Intent intent = new Intent(CombatActivity.this, GameActivity.class);
+                            intent.putExtra("newLocation", idNext);
+                            startActivity(intent);
+                            finish();
+                        }, 500);
+                    }, calculateDelay(victoryText));
+                    return;
+                }
+
+                mobAttack(encounterSituation, mobHealthText, playerHealthText, mob, player, mobHealth, playerHealth, mobMaxHealth, playerMaxHealth);
+            }, calculateDelay(displayText));
         } else if (objectType.equals("heal")) {
             String healText = "Vous soignez votre personnage avec " + objectName + " et récupérez " + objectValue + " de vie";
-            animateText(texte, healText);
-            player.setHealth(player.getHealth() + objectValue);
-            playerHealthText.setText("PV: " + player.getHealth() + "/" + playerMaxHealth);
-            playerHealth.setProgress(refreshProgressBar(player.getHealth(), playerMaxHealth));
-            Thread.sleep(300);
-        }
+            animateTextWithDelay(texte, healText, calculateDelay(healText));
+            handler.postDelayed(() -> {
+                player.setHealth(player.getHealth() + objectValue);
+                playerHealthText.setText("PV: " + player.getHealth() + "/" + playerMaxHealth);
+                playerHealth.setProgress(refreshProgressBar(player.getHealth(), playerMaxHealth));
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                String mobAttackText = mob.getCharName() + " vous inflige " + mob.getDamage() + " de dégâts";
-                animateText(texte, mobAttackText);
+                mobAttack(encounterSituation, mobHealthText, playerHealthText, mob, player, mobHealth, playerHealth, mobMaxHealth, playerMaxHealth);
+            }, calculateDelay(healText));
+        }
+    }
+
+    private void mobAttack(Encounter encounterSituation, TextView mobHealthText, TextView playerHealthText, Character mob, Character player, ProgressBar mobHealth, ProgressBar playerHealth, int mobMaxHealth, int playerMaxHealth) {
+        TextView texte = findViewById(R.id.contextText);
+
+        handler.postDelayed(() -> {
+            String mobAttackText = mob.getCharName() + " vous inflige " + mob.getDamage() + " de dégâts";
+            animateTextWithDelay(texte, mobAttackText, calculateDelay(mobAttackText));
+            handler.postDelayed(() -> {
                 player.setHealth(player.getHealth() - mob.getDamage());
                 playerHealthText.setText("PV: " + player.getHealth() + "/" + playerMaxHealth);
                 playerHealth.setProgress(refreshProgressBar(player.getHealth(), playerMaxHealth));
 
                 if (player.getHealth() <= 0) {
-                    texte.setText("Vous avez été vaincu par " + mob.getCharName());
-
-                    player.setHealth(0);
-                    playerHealthText.setText("PV: 0/" + playerMaxHealth);
-                    playerHealth.setProgress(0);
-                    try {
-                        Thread.sleep(300);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    int idNext = encounterSituation.getLoose();
-                    Intent intent = new Intent(CombatActivity.this, GameActivity.class);
-                    intent.putExtra("newLocation", idNext);
-                    startActivity(intent);
-                    finish();
+                    animateTextWithDelay(texte, "Vous avez été vaincu par " + mob.getCharName(), calculateDelay("Vous avez été vaincu par " + mob.getCharName()));
+                    handler.postDelayed(() -> {
+                        player.setHealth(0);
+                        playerHealthText.setText("PV: 0/" + playerMaxHealth);
+                        playerHealth.setProgress(0);
+                        new Handler().postDelayed(() -> {
+                            int idNext = encounterSituation.getLoose();
+                            Intent intent = new Intent(CombatActivity.this, GameActivity.class);
+                            intent.putExtra("newLocation", idNext);
+                            startActivity(intent);
+                            finish();
+                        }, 500);
+                    }, calculateDelay("Vous avez été vaincu par " + mob.getCharName()));
+                    return;
                 }
-                String yourTurn = "C'est à votre tour d'attaquer";
-                animateText(texte,yourTurn);
-                isPlayerTurn = true;
-                setButtonsEnabled(true);
-            }
-        }, 3000); // Délai de 1 seconde avant que le mob attaque
+
+                handler.postDelayed(() -> {
+                    String yourTurn = "C'est à votre tour d'attaquer";
+                    animateTextWithDelay(texte, yourTurn, calculateDelay(yourTurn));
+                    handler.postDelayed(() -> {
+                        isPlayerTurn = true;
+                        setButtonsEnabled(true);  // Réactiver les boutons ici
+                    }, calculateDelay(yourTurn));
+                }, 1000); // Délai avant que le joueur puisse attaquer à nouveau
+            }, calculateDelay(mobAttackText));
+        }, 3000); // Délai de 3 secondes avant que le mob attaque
+    }
+
+    private long calculateDelay(String text) {
+
+        return text.length() * 50;
     }
 
     protected String getObjectType(int id) {
@@ -303,6 +325,10 @@ public class CombatActivity extends AppCompatActivity {
         return currentHealth * 100 / maxHealth;
     }
 
+    protected int randomDamage(int damage) {
+        Random random = new Random();
+        return random.nextInt() * damage ;
+    }
     protected String getObjectDesc(int id) {
         String[] type = {"description"};
         String[] idValue = {String.valueOf(id)};
