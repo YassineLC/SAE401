@@ -2,11 +2,13 @@ package com.example.sae401;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
@@ -81,6 +83,7 @@ public class GameActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+    @SuppressLint("SetTextI18n")
     protected void setLocation(int newLoc) {
         location = newLoc;
         try {
@@ -90,7 +93,9 @@ public class GameActivity extends AppCompatActivity {
             if (locationObject.has("isLocked") && locationObject.getBoolean("isLocked")) {
                 if (!hasKeyInInventory()) {
                     TextView lockedTextView = findViewById(R.id.Locked);
-                    lockedTextView.setText("Il est nécessaire d'avoir une clé pour aller à la suite");
+                    Typeface customFont = ResourcesCompat.getFont(this, R.font.alkhemikal);
+                    lockedTextView.setTypeface(customFont);
+                    lockedTextView.setText(getString(R.string.locked));
                     return;
                 }
             }
@@ -102,6 +107,8 @@ public class GameActivity extends AppCompatActivity {
             locationDescTextView.setText(locationObject.getString("desc"));
             LinearLayout buttonsContainer = findViewById(R.id.buttons_container);
             LinearLayout objectsContainer = findViewById(R.id.objects_container);
+            TextView isLockedText = findViewById(R.id.Locked);
+            isLockedText.setText("");
 
             ImageView locationImage = findViewById(R.id.locationImage);
 
@@ -130,7 +137,7 @@ public class GameActivity extends AppCompatActivity {
             if(locationObject.has("back"))
             {
                 Button backButton = new Button(this);
-                backButton.setText("Retour");
+                backButton.setText(getString(R.string.back));
                 int back = locationObject.getInt("back");
                 backButton.setOnClickListener(view -> setLocation(back));
                 buttonsContainer.addView(backButton);
@@ -164,8 +171,9 @@ public class GameActivity extends AppCompatActivity {
                 JSONArray objets = locationObject.getJSONArray("objets");
                 for (int i = 0; i < objets.length(); i++) {
                     collectable = locationObject.getInt("collectable");
-                    collectableTextView.setText("Remaining : " + collectable);
-
+                    collectableTextView.setText(getString(R.string.remaining) + " " + collectable);
+                    String text = getString(R.string.remaining) + " " + collectable;
+                    collectableTextView.setText(text);
                     JSONObject objet = objets.getJSONObject(i);
                     String[] id = {String.valueOf(objet.getInt("id"))};
                     String[] icon = {"icon"};
@@ -232,7 +240,7 @@ public class GameActivity extends AppCompatActivity {
 
             // Mettre à jour le nombre collectable affiché
             TextView collectableTextView = findViewById(R.id.collectableTextView);
-            collectableTextView.setText("Remaining : " + String.valueOf(collectable));
+            collectableTextView.setText(getString(R.string.remaining) + " " + String.valueOf(collectable));
 
             // Mettre à jour l'affichage des objets
             ImageView imageView = objectsContainer.findViewById(idObject);

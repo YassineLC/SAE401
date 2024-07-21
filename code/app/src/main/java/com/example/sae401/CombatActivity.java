@@ -222,7 +222,7 @@ public class CombatActivity extends AppCompatActivity {
 
         if (objectType.equals("weapon")) {
             int damage =  randomDamage(objectValue);
-            String displayText = "Vous attaquez avec " + objectName + " et infligez " + String.valueOf(damage) + " de dégâts";
+            String displayText = getString(R.string.attack_with) + objectName + getString(R.string.inflict) + String.valueOf(damage) + getString(R.string.damage);
             animateTextWithDelay(texte, displayText, calculateDelay(displayText));
             handler.postDelayed(() -> {
                 mob.setHealth(mob.getHealth() - damage);
@@ -230,7 +230,7 @@ public class CombatActivity extends AppCompatActivity {
                 mobHealth.setProgress(refreshProgressBar(mob.getHealth(), mobMaxHealth));
 
                 if (mob.getHealth() <= 0) {
-                    String victoryText = "Vous avez vaincu " + mob.getCharName();
+                    String victoryText = getString(R.string.defeat) + mob.getCharName();
                     animateTextWithDelay(texte, victoryText, calculateDelay(victoryText));
                     handler.postDelayed(() -> {
                         mob.setHealth(0);
@@ -250,7 +250,7 @@ public class CombatActivity extends AppCompatActivity {
                 mobAttack(encounterSituation, mobHealthText, playerHealthText, mob, player, mobHealth, playerHealth, mobMaxHealth, playerMaxHealth);
             }, calculateDelay(displayText));
         } else if (objectType.equals("heal")) {
-            String healText = "Vous soignez votre personnage avec " + objectName + " et récupérez " + objectValue + " de vie";
+            String healText = getString(R.string.heal) + objectName + getString(R.string.heal_for) + objectValue + getString(R.string.life);
             animateTextWithDelay(texte, healText, calculateDelay(healText));
             handler.postDelayed(() -> {
                 player.setHealth(player.getHealth() + objectValue);
@@ -267,7 +267,7 @@ public class CombatActivity extends AppCompatActivity {
 
         handler.postDelayed(() -> {
             int damage = randomDamage(mob.getDamage());
-            String mobAttackText = mob.getCharName() + " vous inflige " + String.valueOf(damage) + " de dégâts";
+            String mobAttackText = mob.getCharName() + getString(R.string.inflict_you) + String.valueOf(damage) + getString(R.string.damage);
             animateTextWithDelay(texte, mobAttackText, calculateDelay(mobAttackText));
             handler.postDelayed(() -> {
                 player.setHealth(player.getHealth() - damage);
@@ -275,7 +275,7 @@ public class CombatActivity extends AppCompatActivity {
                 playerHealth.setProgress(refreshProgressBar(player.getHealth(), playerMaxHealth));
 
                 if (player.getHealth() <= 0) {
-                    animateTextWithDelay(texte, "Vous avez été vaincu par " + mob.getCharName(), calculateDelay("Vous avez été vaincu par " + mob.getCharName()));
+                    animateTextWithDelay(texte, getString(R.string.defeated_by) + mob.getCharName(), calculateDelay(getString(R.string.defeated_by) + mob.getCharName()));
                     handler.postDelayed(() -> {
                         player.setHealth(0);
                         playerHealthText.setText("PV: 0/" + playerMaxHealth);
@@ -287,12 +287,12 @@ public class CombatActivity extends AppCompatActivity {
                             startActivity(intent);
                             finish();
                         }, 500);
-                    }, calculateDelay("Vous avez été vaincu par " + mob.getCharName()));
+                    }, calculateDelay(getString(R.string.defeated_by) + mob.getCharName()));
                     return;
                 }
 
                 handler.postDelayed(() -> {
-                    String yourTurn = "C'est à votre tour d'attaquer";
+                    String yourTurn = getString(R.string.turn);
                     animateTextWithDelay(texte, yourTurn, calculateDelay(yourTurn));
                     handler.postDelayed(() -> {
                         isPlayerTurn = true;
