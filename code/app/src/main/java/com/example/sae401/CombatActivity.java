@@ -272,6 +272,7 @@ public class CombatActivity extends AppCompatActivity {
             handler.postDelayed(() -> {
                 player.setHealth(player.getHealth() - damage);
                 playerHealthText.setText("PV: " + player.getHealth() + "/" + playerMaxHealth);
+                playerHealthText.setText("PV: " + player.getHealth() + "/" + playerMaxHealth);
                 playerHealth.setProgress(refreshProgressBar(player.getHealth(), playerMaxHealth));
 
                 if (player.getHealth() <= 0) {

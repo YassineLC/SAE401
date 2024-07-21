@@ -43,12 +43,10 @@ public class GameActivity extends AppCompatActivity {
         Log.d("APP", "CREATE");
         setContentView(R.layout.activity_game);
 
-        // Obtenez l'extra pour la nouvelle location
         int newLocation = getIntent().getIntExtra("newLocation", -1);
         if (newLocation != -1) {
             setLocation(newLocation);
         } else {
-            // Continuez avec l'initialisation normale si newLocation n'est pas passé
             String fileNameWithoutExtension = getIntent().getStringExtra("fileName");
             Resources res = this.getResources();
             @SuppressLint("DiscouragedApi") int sourceFile = res.getIdentifier(fileNameWithoutExtension, "raw", this.getPackageName());
@@ -99,7 +97,7 @@ public class GameActivity extends AppCompatActivity {
                     return;
                 }
             }
-
+            inventory.remove(getKeyIndex());
             // Le reste du code s'exécute si le niveau n'est pas verrouillé ou si une clé est présente dans l'inventaire
             TextView locationTitleTextView = findViewById(R.id.locationName);
             locationTitleTextView.setText(locationObject.getString("name"));
@@ -284,6 +282,16 @@ public class GameActivity extends AppCompatActivity {
             cursor.close();
         }
         return output;
+    }
+    protected int getKeyIndex()
+    {
+        for (int i=0;i<inventory.size();i++) {
+            String type = getObjectType(inventory.get(i));
+            if ("key".equals(type)) {
+                return i;
+            }
+        }
+        return 0;
     }
     @Override
     protected void onPause() {
