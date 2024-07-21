@@ -85,6 +85,17 @@ public class GameActivity extends AppCompatActivity {
         location = newLoc;
         try {
             JSONObject locationObject = data.getJSONArray("places").getJSONObject(location);
+
+            // Vérification de l'attribut isLocked
+            if (locationObject.has("isLocked") && locationObject.getBoolean("isLocked")) {
+                if (!hasKeyInInventory()) {
+                    TextView lockedTextView = findViewById(R.id.Locked);
+                    lockedTextView.setText("Il est nécessaire d'avoir une clé pour aller à la suite");
+                    return;
+                }
+            }
+
+            // Le reste du code s'exécute si le niveau n'est pas verrouillé ou si une clé est présente dans l'inventaire
             TextView locationTitleTextView = findViewById(R.id.locationName);
             locationTitleTextView.setText(locationObject.getString("name"));
             TextView locationDescTextView = findViewById(R.id.locationDesc);
@@ -93,17 +104,17 @@ public class GameActivity extends AppCompatActivity {
             LinearLayout objectsContainer = findViewById(R.id.objects_container);
 
             ImageView locationImage = findViewById(R.id.locationImage);
+
             if (locationObject.has("image")) {
                 locationImage.setVisibility(View.VISIBLE);
                 @SuppressLint("DiscouragedApi") int resourceId = getResources().getIdentifier(locationObject.getString("image"), "drawable", getPackageName());
                 locationImage.setImageResource(resourceId);
-            } else{
+            } else {
                 locationImage.setVisibility(View.GONE);
             }
             locationImage.invalidate();
             buttonsContainer.removeAllViews();
-            if(locationObject.has("actions"))
-            {
+            if (locationObject.has("actions")) {
                 JSONArray actions = locationObject.getJSONArray("actions");
 
                 for (int i = 0; i < actions.length(); i++) {
@@ -115,16 +126,21 @@ public class GameActivity extends AppCompatActivity {
                     button.setOnClickListener(view -> setLocation(next));
                     buttonsContainer.addView(button);
                 }
-
+            }
+            if(locationObject.has("back"))
+            {
+                Button backButton = new Button(this);
+                backButton.setText("Retour");
+                int back = locationObject.getInt("back");
+                backButton.setOnClickListener(view -> setLocation(back));
+                buttonsContainer.addView(backButton);
 
             }
 
-            if(locationObject.has("encounter"))
-            {
+            if (locationObject.has("encounter")) {
                 Button fightButton = new Button(this);
                 fightButton.setText(R.string.fightButton);
                 fightButton.setOnClickListener(view -> {
-
                     int encounterId = 0;
                     try {
                         encounterId = locationObject.getJSONObject("encounter").getInt("id");
@@ -132,40 +148,32 @@ public class GameActivity extends AppCompatActivity {
                         throw new RuntimeException(e);
                     }
 
-                    int playerId = getIntent().getIntExtra("character_id",0);
+                    int playerId = getIntent().getIntExtra("character_id", 0);
                     Intent gameActivityIntent = new Intent(this, CombatActivity.class);
-                    gameActivityIntent.putExtra("encounterId",encounterId);
-                    gameActivityIntent.putExtra("playerId",playerId);
-                    gameActivityIntent.putIntegerArrayListExtra("inventory",inventory);
+                    gameActivityIntent.putExtra("encounterId", encounterId);
+                    gameActivityIntent.putExtra("playerId", playerId);
+                    gameActivityIntent.putIntegerArrayListExtra("inventory", inventory);
                     startActivity(gameActivityIntent);
-
                 });
-
                 buttonsContainer.addView(fightButton);
-
             }
 
-
             objectsContainer.removeAllViews();
-            if(locationObject.has("objets"))
-            {
-
+            if (locationObject.has("objets")) {
                 TextView collectableTextView = findViewById(R.id.collectableTextView);
                 JSONArray objets = locationObject.getJSONArray("objets");
-                for(int i = 0 ; i < objets.length();i++)
-                {
+                for (int i = 0; i < objets.length(); i++) {
                     collectable = locationObject.getInt("collectable");
-                    collectableTextView.setText("Remaining : "+String.valueOf(collectable));
+                    collectableTextView.setText("Remaining : " + collectable);
 
                     JSONObject objet = objets.getJSONObject(i);
                     String[] id = {String.valueOf(objet.getInt("id"))};
                     String[] icon = {"icon"};
-                    Cursor cursor = db.query("items",icon, "id = ? ", id, null, null, null);
+                    Cursor cursor = db.query("items", icon, "id = ? ", id, null, null, null);
                     if (cursor != null) {
                         if (cursor.moveToFirst()) {
-                            // Récupérer la valeur du champ "icon"
                             String iconName = cursor.getString(cursor.getColumnIndexOrThrow("icon"));
-                            Log.d("icontest",iconName);
+                            Log.d("icontest", iconName);
                             ImageView imageView = new ImageView(this);
                             imageView.setId(objet.getInt("id"));
                             imageView.setLayoutParams(new LinearLayout.LayoutParams(32, 32));
@@ -176,47 +184,16 @@ public class GameActivity extends AppCompatActivity {
                             imageView.setOnClickListener(view -> {
                                 try {
                                     collectable = collectObject(objet.getInt("id"), collectable, objectsContainer);
-                                    Log.d("id",String.valueOf(objet.getInt("id")));
+                                    Log.d("id", String.valueOf(objet.getInt("id")));
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
                                 }
-                                // Mettre à jour la valeur de collectable
-                                // Vous pouvez également mettre à jour l'affichage du nombre collectable ici si nécessaire
                             });
                         }
                         cursor.close();
                     }
-
-                    /*
-                    String objectName = objet.getString("description");
-                    Button button = new Button(this);
-                    button.setText(objectName);
-                    button.setId(objet.getInt("id"));
-                    objectsContainer.addView(button);
-                    button.setOnClickListener(view -> {
-                        try {
-                            collectable = collectObject(objet.getInt("id"), collectable, objectsContainer);
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        }
-                        // Mettre à jour la valeur de collectable
-                        // Vous pouvez également mettre à jour l'affichage du nombre collectable ici si nécessaire
-                    });
-                    */
                 }
-
-
             }
-
-
-
-/*            boolean isFinal = locationObject.getBoolean("final");
-            if (isFinal) {
-                Button button = new Button(this);
-                button.setText(getString(R.string.won_game));
-                button.setOnClickListener(view -> finish());
-                buttonsContainer.addView(button);
-            }*/
 
             boolean isFinal = locationObject.getBoolean("final");
             if (isFinal) {
@@ -227,6 +204,9 @@ public class GameActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+
+
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         // put string value
@@ -268,6 +248,35 @@ public class GameActivity extends AppCompatActivity {
         return collectable;
     }
 
+
+
+
+
+    private boolean hasKeyInInventory() {
+
+        for (int i=0;i<inventory.size();i++) {
+            String type = getObjectType(inventory.get(i));
+            if ("key".equals(type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected String getObjectType(int id)
+    {
+        String[] idVal = {String.valueOf(id)};
+        String[] type = {"type"};
+        Cursor cursor = db.query("items", type, "id = ? ", idVal, null, null, null);
+        String output = null;
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                output = cursor.getString(cursor.getColumnIndexOrThrow("type"));
+            }
+            cursor.close();
+        }
+        return output;
+    }
     @Override
     protected void onPause() {
         super.onPause();

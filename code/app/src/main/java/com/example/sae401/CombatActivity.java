@@ -221,10 +221,11 @@ public class CombatActivity extends AppCompatActivity {
         setButtonsEnabled(false);  // Désactiver les boutons ici
 
         if (objectType.equals("weapon")) {
-            String displayText = "Vous attaquez avec " + objectName + " et infligez " + objectValue + " de dégâts";
+            int damage =  randomDamage(objectValue);
+            String displayText = "Vous attaquez avec " + objectName + " et infligez " + String.valueOf(damage) + " de dégâts";
             animateTextWithDelay(texte, displayText, calculateDelay(displayText));
             handler.postDelayed(() -> {
-                mob.setHealth(mob.getHealth() - objectValue);
+                mob.setHealth(mob.getHealth() - damage);
                 mobHealthText.setText("PV: " + mob.getHealth() + "/" + mobMaxHealth);
                 mobHealth.setProgress(refreshProgressBar(mob.getHealth(), mobMaxHealth));
 
@@ -265,10 +266,11 @@ public class CombatActivity extends AppCompatActivity {
         TextView texte = findViewById(R.id.contextText);
 
         handler.postDelayed(() -> {
-            String mobAttackText = mob.getCharName() + " vous inflige " + mob.getDamage() + " de dégâts";
+            int damage = randomDamage(mob.getDamage());
+            String mobAttackText = mob.getCharName() + " vous inflige " + String.valueOf(damage) + " de dégâts";
             animateTextWithDelay(texte, mobAttackText, calculateDelay(mobAttackText));
             handler.postDelayed(() -> {
-                player.setHealth(player.getHealth() - mob.getDamage());
+                player.setHealth(player.getHealth() - damage);
                 playerHealthText.setText("PV: " + player.getHealth() + "/" + playerMaxHealth);
                 playerHealth.setProgress(refreshProgressBar(player.getHealth(), playerMaxHealth));
 
@@ -327,7 +329,7 @@ public class CombatActivity extends AppCompatActivity {
 
     protected int randomDamage(int damage) {
         Random random = new Random();
-        return random.nextInt() * damage ;
+        return random.nextInt(16) + damage ;
     }
     protected String getObjectDesc(int id) {
         String[] type = {"description"};
