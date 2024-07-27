@@ -1,6 +1,8 @@
 package com.example.sae401;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.NonUiContext;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
@@ -97,7 +99,11 @@ public class GameActivity extends AppCompatActivity {
                     return;
                 }
             }
-            inventory.remove(getKeyIndex());
+            Object keyIndex= getKeyIndex();
+            if(keyIndex != null)
+            {
+                inventory.remove(getKeyIndex());
+            }
             // Le reste du code s'exécute si le niveau n'est pas verrouillé ou si une clé est présente dans l'inventaire
             TextView locationTitleTextView = findViewById(R.id.locationName);
             locationTitleTextView.setText(locationObject.getString("name"));
@@ -283,7 +289,8 @@ public class GameActivity extends AppCompatActivity {
         }
         return output;
     }
-    protected int getKeyIndex()
+    @Nullable
+    protected Object getKeyIndex()
     {
         for (int i=0;i<inventory.size();i++) {
             String type = getObjectType(inventory.get(i));
@@ -291,7 +298,7 @@ public class GameActivity extends AppCompatActivity {
                 return i;
             }
         }
-        return 0;
+        return null;
     }
     @Override
     protected void onPause() {
