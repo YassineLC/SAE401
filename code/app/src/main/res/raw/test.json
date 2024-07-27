@@ -49,6 +49,7 @@
       "desc": "Vous prenez l'escalier de droite et descendez dans une cave obscure.",
       "image": "place2",
       "final": false,
+      "back": 0,
       "actions": [
         {
           "action_name": "Explorer la cave",
@@ -82,6 +83,7 @@
       "desc": "Vous arrivez dans une salle sombre avec des symboles mystérieux gravés sur les murs. Une lumière étrange émane du centre.",
       "image": "place4",
       "final": false,
+      "isLocked": true,
       "encounter":
       {
         "id": "encounter_002",
