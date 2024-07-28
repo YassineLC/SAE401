@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.database.sae401.DatabaseHelper;
 
 import org.json.JSONArray;
@@ -69,6 +70,9 @@ public class GameActivity extends AppCompatActivity {
             location = startLocation;
             setLocation(location);
         }
+
+        ImageView backgroundGif = findViewById(R.id.backgroundGif);
+        Glide.with(this).load(R.drawable.background).into(backgroundGif);
 
         mediaPlayer = MediaPlayer.create(this, R.raw.sound_dark_fantasy);
         mediaPlayer.setLooping(true);
@@ -170,12 +174,14 @@ public class GameActivity extends AppCompatActivity {
             }
 
             objectsContainer.removeAllViews();
+            TextView collectableTextView = findViewById(R.id.collectableTextView);
+            collectableTextView.setVisibility(View.GONE);
             if (locationObject.has("objets")) {
-                TextView collectableTextView = findViewById(R.id.collectableTextView);
                 JSONArray objets = locationObject.getJSONArray("objets");
                 for (int i = 0; i < objets.length(); i++) {
                     collectable = locationObject.getInt("collectable");
                     collectableTextView.setText(getString(R.string.remaining) + " " + collectable);
+                    collectableTextView.setVisibility(View.VISIBLE);
                     String text = getString(R.string.remaining) + " " + collectable;
                     collectableTextView.setText(text);
                     JSONObject objet = objets.getJSONObject(i);
@@ -188,8 +194,8 @@ public class GameActivity extends AppCompatActivity {
                             Log.d("icontest", iconName);
                             ImageView imageView = new ImageView(this);
                             imageView.setId(objet.getInt("id"));
-                            imageView.setLayoutParams(new LinearLayout.LayoutParams(32, 32));
-                            int resID = getResources().getIdentifier("sword_black", "drawable", getPackageName());
+                            imageView.setLayoutParams(new LinearLayout.LayoutParams(128, 128));
+                            @SuppressLint("DiscouragedApi") int resID = getResources().getIdentifier(iconName, "drawable", getPackageName());
                             imageView.setImageResource(resID);
 
                             objectsContainer.addView(imageView);
@@ -205,6 +211,17 @@ public class GameActivity extends AppCompatActivity {
                         cursor.close();
                     }
                 }
+            }
+
+            if (location == 10) { // TODO: Mettre le niveau John Pork
+                if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                    mediaPlayer.pause();
+                    mediaPlayer.release();
+                    mediaPlayer = null;
+                }
+                MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.messenger_call);
+                mediaPlayer.start();
+                mediaPlayer.setLooping(true);
             }
 
             boolean isFinal = locationObject.getBoolean("final");

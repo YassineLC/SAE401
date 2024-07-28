@@ -153,7 +153,7 @@ public class CombatActivity extends AppCompatActivity {
                         ImageView imageView = new ImageView(this);
                         imageView.setId(inventoryObjects.get(i));
                         imageView.setLayoutParams(new LinearLayout.LayoutParams(150, 150));
-                        int resID = getResources().getIdentifier("sword_black", "drawable", getPackageName());
+                        int resID = getResources().getIdentifier(iconName, "drawable", getPackageName());
                         imageView.setImageResource(resID);
                         capacitiesLayout.addView(imageView);
                         int mobMaxHealth = mob.getHealth();
@@ -254,6 +254,9 @@ public class CombatActivity extends AppCompatActivity {
             animateTextWithDelay(texte, healText, calculateDelay(healText));
             handler.postDelayed(() -> {
                 player.setHealth(player.getHealth() + objectValue);
+                if (player.getHealth() > playerMaxHealth) {
+                    player.setHealth(playerMaxHealth);
+                }
                 playerHealthText.setText("PV: " + player.getHealth() + "/" + playerMaxHealth);
                 playerHealth.setProgress(refreshProgressBar(player.getHealth(), playerMaxHealth));
 
