@@ -8,7 +8,7 @@ public class TextAnimator {
     public static void animateText(TextView textView, String text) {
         Handler handler = new Handler();
         textView.setText("");
-        int delay = 30; // Délai en ms entre chaque caractère
+        int delay = 27; // Délai en ms entre chaque caractère
 
         for (int i = 0; i < text.length(); i++) {
             final int index = i;
