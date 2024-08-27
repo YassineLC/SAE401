@@ -238,7 +238,9 @@ public class CombatActivity extends AppCompatActivity {
                         mobHealth.setProgress(0);
                         new Handler().postDelayed(() -> {
                             int idNext = encounterSituation.getNext();
+                            Log.d("idnext dans combat",String.valueOf(idNext));
                             Intent intent = new Intent(CombatActivity.this, GameActivity.class);
+                            intent.putExtra("fileName", "test");
                             intent.putExtra("newLocation", idNext);
                             startActivity(intent);
                             finish();
