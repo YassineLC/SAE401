@@ -242,6 +242,7 @@ public class CombatActivity extends AppCompatActivity {
                             Intent intent = new Intent(CombatActivity.this, GameActivity.class);
                             intent.putExtra("fileName","test");
                             intent.putExtra("newLocation", idNext);
+                            intent.putExtra("character_id",getIntent().getIntExtra("playerId", 0));
                             startActivity(intent);
                             finish();
                         }, 500);
