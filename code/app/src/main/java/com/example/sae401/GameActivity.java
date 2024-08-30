@@ -1,11 +1,16 @@
 package com.example.sae401;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.NonUiContext;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,15 +20,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.database.sae401.DatabaseHelper;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class GameActivity extends AppCompatActivity {
+    
+    private DatabaseHelper db ; 
     private JSONObject data;
     private int location = -1;
     private final ArrayList<Integer> inventory = new ArrayList<Integer>();
@@ -32,54 +43,105 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("APP","CREATE");
+        Log.d("APP", "CREATE");
         setContentView(R.layout.activity_game);
+
+
+
         String fileNameWithoutExtension = getIntent().getStringExtra("fileName");
         Resources res = this.getResources();
         @SuppressLint("DiscouragedApi") int sourceFile = res.getIdentifier(fileNameWithoutExtension, "raw", this.getPackageName());
-        String worldTitle="";
+        String worldTitle = "";
+
+        db = new DatabaseHelper(this);
+
+        try {
+            db.createDatabase();
+            db.openDatabase();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int newLocation = getIntent().getIntExtra("newLocation", -1);
+        Log.d("NEWLOCATION",String.valueOf(newLocation));
+
         int startLocation = 0;
+
         InputStream inputStream = getResources().openRawResource(sourceFile);
         Scanner scanner = new Scanner(inputStream);
         String jsonString = scanner.useDelimiter("\\A").next();
         try {
             data = new JSONObject(jsonString);
-            worldTitle = data.getString("title");
-            startLocation = data.getInt("start");
+            Log.d("jsonobj",data.toString());
+            if(newLocation != -1)
+            {
+                Log.d("NEWLOCATION",String.valueOf(newLocation));
+                worldTitle = data.getJSONArray("places").getJSONObject(newLocation).getString("name");
+                startLocation = newLocation;
+            }
+            else
+            {
+                worldTitle = data.getString("title");
+                startLocation = data.getInt("start");
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String newTitle = String.format(getString(R.string.app_title_name),getString(R.string.app_name),worldTitle);
+        String newTitle = String.format(getString(R.string.app_title_name), getString(R.string.app_name), worldTitle);
         setTitle(newTitle);
         location = startLocation;
         setLocation(location);
+        ImageView backgroundGif = findViewById(R.id.backgroundGif);
+        Glide.with(this).load(R.drawable.background).into(backgroundGif);
         mediaPlayer = MediaPlayer.create(this, R.raw.sound_dark_fantasy);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
+
+
     }
+    @SuppressLint("SetTextI18n")
     protected void setLocation(int newLoc) {
         location = newLoc;
         try {
             JSONObject locationObject = data.getJSONArray("places").getJSONObject(location);
+
+            // Vérification de l'attribut isLocked
+            if (locationObject.has("isLocked") && locationObject.getBoolean("isLocked")) {
+                if (!hasKeyInInventory()) {
+                    TextView lockedTextView = findViewById(R.id.Locked);
+                    Typeface customFont = ResourcesCompat.getFont(this, R.font.alkhemikal);
+                    lockedTextView.setTypeface(customFont);
+                    lockedTextView.setText(getString(R.string.locked));
+                    return;
+                }
+            }
+            Object keyIndex= getKeyIndex();
+            if(keyIndex != null)
+            {
+                inventory.remove(getKeyIndex());
+            }
+            // Le reste du code s'exécute si le niveau n'est pas verrouillé ou si une clé est présente dans l'inventaire
             TextView locationTitleTextView = findViewById(R.id.locationName);
             locationTitleTextView.setText(locationObject.getString("name"));
             TextView locationDescTextView = findViewById(R.id.locationDesc);
             locationDescTextView.setText(locationObject.getString("desc"));
             LinearLayout buttonsContainer = findViewById(R.id.buttons_container);
             LinearLayout objectsContainer = findViewById(R.id.objects_container);
+            TextView isLockedText = findViewById(R.id.Locked);
+            isLockedText.setText("");
 
             ImageView locationImage = findViewById(R.id.locationImage);
+
             if (locationObject.has("image")) {
                 locationImage.setVisibility(View.VISIBLE);
                 @SuppressLint("DiscouragedApi") int resourceId = getResources().getIdentifier(locationObject.getString("image"), "drawable", getPackageName());
                 locationImage.setImageResource(resourceId);
-            } else{
+            } else {
                 locationImage.setVisibility(View.GONE);
             }
             locationImage.invalidate();
             buttonsContainer.removeAllViews();
-            if(locationObject.has("actions"))
-            {
+            if (locationObject.has("actions")) {
                 JSONArray actions = locationObject.getJSONArray("actions");
 
                 for (int i = 0; i < actions.length(); i++) {
@@ -91,76 +153,88 @@ public class GameActivity extends AppCompatActivity {
                     button.setOnClickListener(view -> setLocation(next));
                     buttonsContainer.addView(button);
                 }
-
+            }
+            if(locationObject.has("back"))
+            {
+                Button backButton = new Button(this);
+                backButton.setText(getString(R.string.back));
+                int back = locationObject.getInt("back");
+                backButton.setOnClickListener(view -> setLocation(back));
+                buttonsContainer.addView(backButton);
 
             }
 
-            if(locationObject.has("encounter"))
-            {
+            if (locationObject.has("encounter")) {
                 Button fightButton = new Button(this);
                 fightButton.setText(R.string.fightButton);
                 fightButton.setOnClickListener(view -> {
-
-                    JSONObject encounterInfo = null;
+                    int encounterId = 0;
                     try {
-                        encounterInfo = locationObject.getJSONObject("encounter");
+                        encounterId = locationObject.getJSONObject("encounter").getInt("id");
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
 
-                    } catch (JSONException e) {throw new RuntimeException(e);}
-
-                    Intent gameActivityIntent = new Intent(this, ActivityCombat.class);
-                    gameActivityIntent.putExtra("encounterInfo",encounterInfo.toString());
-                    gameActivityIntent.putIntegerArrayListExtra("inventory",inventory);
+                    int playerId = getIntent().getIntExtra("character_id", 0);
+                    Intent gameActivityIntent = new Intent(this, CombatActivity.class);
+                    gameActivityIntent.putExtra("encounterId", encounterId);
+                    gameActivityIntent.putExtra("playerId", playerId);
+                    gameActivityIntent.putIntegerArrayListExtra("inventory", inventory);
                     startActivity(gameActivityIntent);
-
                 });
-
                 buttonsContainer.addView(fightButton);
-
             }
-
 
             objectsContainer.removeAllViews();
-            if(locationObject.has("objets"))
-            {
-
-                TextView collectableTextView = findViewById(R.id.collectableTextView);
+            TextView collectableTextView = findViewById(R.id.collectableTextView);
+            collectableTextView.setVisibility(View.GONE);
+            if (locationObject.has("objets")) {
                 JSONArray objets = locationObject.getJSONArray("objets");
-                for(int i = 0 ; i < objets.length();i++)
-                {
+                for (int i = 0; i < objets.length(); i++) {
                     collectable = locationObject.getInt("collectable");
-                    collectableTextView.setText("Remaining : "+String.valueOf(collectable));
-
+                    collectableTextView.setText(getString(R.string.remaining) + " " + collectable);
+                    collectableTextView.setVisibility(View.VISIBLE);
+                    String text = getString(R.string.remaining) + " " + collectable;
+                    collectableTextView.setText(text);
                     JSONObject objet = objets.getJSONObject(i);
-                    String objectName = objet.getString("description");
-                    Button button = new Button(this);
-                    button.setText(objectName);
-                    button.setId(objet.getInt("id"));
-                    objectsContainer.addView(button);
-                    button.setOnClickListener(view -> {
-                        try {
-                            collectable = collectObject(objet.getInt("id"), collectable, objectsContainer);
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
+                    String[] id = {String.valueOf(objet.getInt("id"))};
+                    String[] icon = {"icon"};
+                    Cursor cursor = db.query("items", icon, "id = ? ", id, null, null, null);
+                    if (cursor != null) {
+                        if (cursor.moveToFirst()) {
+                            String iconName = cursor.getString(cursor.getColumnIndexOrThrow("icon"));
+                            Log.d("icontest", iconName);
+                            ImageView imageView = new ImageView(this);
+                            imageView.setId(objet.getInt("id"));
+                            imageView.setLayoutParams(new LinearLayout.LayoutParams(128, 128));
+                            @SuppressLint("DiscouragedApi") int resID = getResources().getIdentifier(iconName, "drawable", getPackageName());
+                            imageView.setImageResource(resID);
+
+                            objectsContainer.addView(imageView);
+                            imageView.setOnClickListener(view -> {
+                                try {
+                                    collectable = collectObject(objet.getInt("id"), collectable, objectsContainer);
+                                    Log.d("id", String.valueOf(objet.getInt("id")));
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            });
                         }
-                        // Mettre à jour la valeur de collectable
-                        // Vous pouvez également mettre à jour l'affichage du nombre collectable ici si nécessaire
-                    });
-
+                        cursor.close();
+                    }
                 }
-
-
-
             }
 
-
-
-/*            boolean isFinal = locationObject.getBoolean("final");
-            if (isFinal) {
-                Button button = new Button(this);
-                button.setText(getString(R.string.won_game));
-                button.setOnClickListener(view -> finish());
-                buttonsContainer.addView(button);
-            }*/
+            if (location == 10) { // TODO: Mettre le niveau John Pork
+                if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                    mediaPlayer.pause();
+                    mediaPlayer.release();
+                    mediaPlayer = null;
+                }
+                MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.messenger_call);
+                mediaPlayer.start();
+                mediaPlayer.setLooping(true);
+            }
 
             boolean isFinal = locationObject.getBoolean("final");
             if (isFinal) {
@@ -171,6 +245,9 @@ public class GameActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+
+
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         // put string value
@@ -192,15 +269,15 @@ public class GameActivity extends AppCompatActivity {
         if (collectable != 0) {
             collectable -= 1;
             inventory.add(idObject);
-            Log.d("ajout",inventory.toString());
+            Log.d("ajout", inventory.toString());
 
             // Mettre à jour le nombre collectable affiché
             TextView collectableTextView = findViewById(R.id.collectableTextView);
-            collectableTextView.setText("Remaining : "+String.valueOf(collectable));
+            collectableTextView.setText(getString(R.string.remaining) + " " + String.valueOf(collectable));
 
             // Mettre à jour l'affichage des objets
-            Button button = objectsContainer.findViewById(idObject);
-            objectsContainer.removeView(button);
+            ImageView imageView = objectsContainer.findViewById(idObject);
+            objectsContainer.removeView(imageView);
 
             // Vérifier si tous les objets collectables ont été collectés
             if (collectable == 0) {
@@ -212,6 +289,46 @@ public class GameActivity extends AppCompatActivity {
         return collectable;
     }
 
+
+
+
+
+    private boolean hasKeyInInventory() {
+
+        for (int i=0;i<inventory.size();i++) {
+            String type = getObjectType(inventory.get(i));
+            if ("key".equals(type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected String getObjectType(int id)
+    {
+        String[] idVal = {String.valueOf(id)};
+        String[] type = {"type"};
+        Cursor cursor = db.query("items", type, "id = ? ", idVal, null, null, null);
+        String output = null;
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                output = cursor.getString(cursor.getColumnIndexOrThrow("type"));
+            }
+            cursor.close();
+        }
+        return output;
+    }
+    @Nullable
+    protected Object getKeyIndex()
+    {
+        for (int i=0;i<inventory.size();i++) {
+            String type = getObjectType(inventory.get(i));
+            if ("key".equals(type)) {
+                return i;
+            }
+        }
+        return null;
+    }
     @Override
     protected void onPause() {
         super.onPause();
@@ -222,6 +339,7 @@ public class GameActivity extends AppCompatActivity {
 
     protected void onDestroy() {
         super.onDestroy();
+        db.close();
         if (mediaPlayer != null) {
             mediaPlayer.release();
             mediaPlayer = null;

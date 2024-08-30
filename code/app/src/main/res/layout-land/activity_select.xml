@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center"
+    android:layout_gravity="center">
+
+    <TextView
+        android:id="@+id/choose_character_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/choose_character"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_gravity="center">
+
+        <!-- Personnage 1 -->
+        <LinearLayout
+            android:id="@+id/character1_layout"
+            android:layout_width="0dp"
+            android:layout_height="205dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/character1_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Nom"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/character1_image"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:maxWidth="110dp"
+                android:maxHeight="110dp"
+                android:src="@drawable/archer" />
+
+            <TextView
+                android:id="@+id/character1_pv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/health_character" />
+
+            <TextView
+                android:id="@+id/character1_damage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/damage_character" />
+        </LinearLayout>
+
+        <!-- Personnage 2 -->
+        <LinearLayout
+            android:id="@+id/character2_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="8dp"
+            android:background="?attr/selectableItemBackground">
+
+            <TextView
+                android:id="@+id/character2_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nom"
+                android:layout_marginBottom="8dp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/character2_image"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:maxWidth="110dp"
+                android:maxHeight="110dp"
+                android:src="@drawable/warrior" />
+
+            <TextView
+                android:id="@+id/character2_pv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/health_character"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:id="@+id/character2_damage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/damage_character"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <!-- Personnage 3 -->
+        <LinearLayout
+            android:id="@+id/character3_layout"
+            android:layout_width="0dp"
+            android:layout_height="205dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/character3_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Nom"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/character3_image"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:maxWidth="110dp"
+                android:maxHeight="110dp"
+                android:src="@drawable/mage" />
+
+            <TextView
+                android:id="@+id/character3_pv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/health_character" />
+
+            <TextView
+                android:id="@+id/character3_damage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/damage_character" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/confirm_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/confirm_selection" />
+</LinearLayout>
