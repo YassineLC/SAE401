@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">Explorer</string>
+    <string name="launch_game">Start game</string>
+    <string name="app_title_name">%1$s: %2$s</string>
+    <string name="won_game">Good game!</string>
+    <string name="settings_game">Settings</string>
+    <string name="english_language">English</string>
+    <string name="french_language">French</string>
+    <string name="language_settings">Language</string>
+    <string name="return_settings_button">Return</string>
+    <string name="fightButton">Fight</string>
+    <string name="restart_button">Play again</string>
+    <string name="exit_button">Exit</string>
+    <string name="ConfirmExit">Do you really want to quit ?</string>
+    <string name="combat_question">What do you want to do ?</string>
+    <string name="choose_character">Choose your character</string>
+    <string name="damage_character">"Damage: "</string>
+    <string name="health_character">"HP: "</string>
+    <string name="confirm_selection">Confirm selection</string>
+    <string name="dialog_title">Confirmation</string>
+    <string name="dialog_message">Are you sure you want to start with this character ?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="remaining">"Remaining : "</string>
+    <string name="defeat">"You have defeated "</string>
+    <string name="turn">It\'s your turn</string>
+    <string name="attack_with">"You attack with "</string>
+    <string name="inflict">" and inflict "</string>
+    <string name="damage">" damage"</string>
+    <string name="heal">"You heal your character with "</string>
+    <string name="heal_for">" and recover "</string>
+    <string name="life">" HP"</string>
+    <string name="inflict_you">" inflict you "</string>
+    <string name="defeated_by">"You were defeated by "</string>
+    <string name="back">Back</string>
+    <string name="locked">It is necessary to have a key for the next room</string>
+</resources>
