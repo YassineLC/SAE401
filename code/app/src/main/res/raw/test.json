@@ -87,7 +87,7 @@
           "next": 7
         }
       ],
-      "collectable": 1,
+      "collectable": 2,
       "objets": [
         {
           "id": 1
@@ -146,14 +146,14 @@
       "name": "Rituel Mystérieux",
       "desc": "Un rituel ancien est en cours. Vous sentez une puissance incroyable émaner du centre de la salle.",
       "image": "rituel",
-      "final": true,
+      "final": false,
       "actions": [
         {
           "action_name": "Interrompre le rituel",
           "next": 11
         }
       ],
-      "collectable": 1,
+      "collectable": 2,
       "objets": [
         {
           "id": 1
@@ -171,6 +171,12 @@
       "encounter": {
         "id": 5
       }
+    },
+    {
+      "name": "Fin de jeu",
+      "desc": "",
+      "image": "",
+      "final": true
     }
   ]
 }

@@ -225,16 +225,6 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
 
-            if (location == 10) { // TODO: Mettre le niveau John Pork
-                if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-                    mediaPlayer.pause();
-                    mediaPlayer.release();
-                    mediaPlayer = null;
-                }
-                MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.messenger_call);
-                mediaPlayer.start();
-                mediaPlayer.setLooping(true);
-            }
 
             boolean isFinal = locationObject.getBoolean("final");
             if (isFinal) {
