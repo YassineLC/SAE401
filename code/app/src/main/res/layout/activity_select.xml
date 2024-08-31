@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@drawable/select"
     android:gravity="center"
-    android:layout_gravity="center">
+    android:orientation="vertical"
+    android:padding="16dp">
+
 
     <TextView
         android:id="@+id/choose_character_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:background="#A9000000"
         android:text="@string/choose_character"
+        android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:background="#A9000000"
         android:gravity="center"
-        android:layout_gravity="center">
+        android:orientation="horizontal">
 
         <!-- Personnage 1 -->
         <LinearLayout
@@ -40,6 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="Nom"
+                android:textColor="@color/white"
                 android:textStyle="bold" />
 
             <ImageView
@@ -55,14 +61,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/health_character" />
+                android:text="@string/health_character"
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/character1_damage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@string/damage_character" />
+                android:text="@string/damage_character"
+                android:textColor="@color/white" />
         </LinearLayout>
 
         <!-- Personnage 2 -->
@@ -71,17 +79,18 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical"
+            android:background="?attr/selectableItemBackground"
             android:gravity="center"
-            android:padding="8dp"
-            android:background="?attr/selectableItemBackground">
+            android:orientation="vertical"
+            android:padding="8dp">
 
             <TextView
                 android:id="@+id/character2_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nom"
                 android:layout_marginBottom="8dp"
+                android:text="Nom"
+                android:textColor="@color/white"
                 android:textStyle="bold" />
 
             <ImageView
@@ -96,15 +105,17 @@
                 android:id="@+id/character2_pv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="@string/health_character"
-                android:layout_marginTop="8dp" />
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/character2_damage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:text="@string/damage_character"
-                android:layout_marginTop="4dp" />
+                android:textColor="@color/white" />
         </LinearLayout>
 
         <!-- Personnage 3 -->
@@ -124,7 +135,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="Nom"
-                android:textStyle="bold" />
+                android:textColor="@color/white" />
 
             <ImageView
                 android:id="@+id/character3_image"
@@ -139,14 +150,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/health_character" />
+                android:text="@string/health_character"
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/character3_damage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@string/damage_character" />
+                android:text="@string/damage_character"
+                android:textColor="@color/white" />
         </LinearLayout>
 
     </LinearLayout>
@@ -156,5 +169,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/confirm_selection" />
+        android:backgroundTint="#1EB53E"/>
 </LinearLayout>
