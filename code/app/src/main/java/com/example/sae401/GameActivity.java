@@ -225,7 +225,6 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
 
-
             boolean isFinal = locationObject.getBoolean("final");
             if (isFinal) {
                 Intent intent = new Intent(this, EndActivity.class);

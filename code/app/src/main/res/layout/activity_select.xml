@@ -8,6 +8,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+
     <TextView
         android:id="@+id/choose_character_title"
         android:layout_width="wrap_content"
@@ -134,8 +135,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="Nom"
-                android:textColor="@color/white"
-                android:textStyle="bold" />
+                android:textColor="@color/white" />
 
             <ImageView
                 android:id="@+id/character3_image"
@@ -169,6 +169,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:backgroundTint="#1EB53E"
-        android:text="@string/confirm_selection" />
+        android:backgroundTint="#1EB53E"/>
 </LinearLayout>
