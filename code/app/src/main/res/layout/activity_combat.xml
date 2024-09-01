@@ -23,7 +23,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#BF000000"
+        android:background="@drawable/background1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -144,6 +144,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
+        android:background="#B0000000"
         android:fontFamily="@font/alkhemikal"
         android:gravity="center"
         android:text="@string/combat_question"
