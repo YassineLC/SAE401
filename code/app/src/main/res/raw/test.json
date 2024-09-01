@@ -1,0 +1,182 @@
+{
+  "title": "Le Donjon du Chevalier Mystérieux",
+  "start": 0,
+  "places": [
+    {
+      "name": "Forêt sauvage",
+      "desc": "Vous entrez dans une forêt et entendez des cris d'animaux qui se rapprochent.",
+      "image": "forest",
+      "final": false,
+      "actions": [
+        {
+          "action_name": "S'enfoncer dans la forêt",
+          "next": 1
+        },
+        {
+          "action_name": "Continuer le chemin",
+          "next": 2
+        }
+      ]
+    },
+    {
+      "name": "Profond dans la forêt",
+      "desc": "Après vous être enfoncé pendant 10 minutes dans la forêt, un loup sauvage se dresse devant vous.  Une épée jonche le sol.",
+      "image": "forest_wolf",
+      "final": false,
+      "actions": [
+        {
+          "action_name": "Attaquer le loup",
+          "next": 3
+        }
+      ],
+      "collectable": 1,
+      "objets": [
+        {
+          "id": 1
+        }
+      ]
+    },
+    {
+      "name": "Chemin de la forêt",
+      "desc": "Plus loin sur le chemin de la forêt, des os jonchent le sol. Plus loin, un roi squelette s'avance vers vous.  Une épée ornée jonche le sol.",
+      "image": "forest_road",
+      "final": false,
+      "actions": [
+        {
+          "action_name": "Attaquer le Roi squelette",
+          "next": 4
+        }
+      ],
+      "collectable": 1,
+      "objets": [
+        {
+          "id": 1
+        }
+      ]
+    },
+    {
+      "name": "Combat contre le loup sauvage",
+      "desc": "Le loup vous saute dessus !",
+      "image": "wolf",
+      "final": false,
+      "encounter": {
+        "id": 2
+      }
+    },
+    {
+      "name": "Combat contre le Roi squelette",
+      "desc": "Le roi squelette vous lance des os !",
+      "image": "skeleton",
+      "final": false,
+      "encounter": {
+        "id": 4
+      }
+    },
+    {
+      "name": "Entrée du Donjon",
+      "desc": "Après vous être sorti de la forêt, vous vous trouvez à l'entrée d'un donjon sombre. Deux portes se dressent devant vous : l'une à gauche, l'autre à droite.",
+      "image": "dungeon",
+      "final": false,
+      "actions": [
+        {
+          "action_name": "Prendre la porte de gauche",
+          "next": 6
+        },
+        {
+          "action_name": "Prendre la porte de droite",
+          "next": 7
+        }
+      ],
+      "collectable": 2,
+      "objets": [
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        }
+      ]
+    },
+    {
+      "name": "Porte de Gauche",
+      "desc": "Vous ouvre la porte de gauche et arrivez dans un long couloir faiblement éclairé par des torches.",
+      "image": "left_entry",
+      "final": false,
+      "actions": [
+        {
+          "action_name": "Continuer dans le couloir",
+          "next": 8
+        }
+      ]
+    },
+    {
+      "name": "Porte de Droite",
+      "desc": "Vous prenez la porte de droite et descendez dans une cave obscure.",
+      "image": "right_entry",
+      "final": false,
+      "back": 0,
+      "actions": [
+        {
+          "action_name": "Explorer la cave",
+          "next": 9
+        }
+      ]
+    },
+    {
+      "name": "Salle de Gauche",
+      "desc": "Vous entrez dans une grande salle avec des torches allumées aux murs. La seule porte de sortie se trouve au fond mais un chevalier la surveille.",
+      "image": "knight_ennemy",
+      "final": false,
+      "isLocked": false,
+      "encounter": {
+        "id": 1
+      }
+    },
+    {
+      "name": "Cave",
+      "desc": "Vous arrivez dans une cave sombre avec des symboles mystérieux gravés sur les murs. Au milieu d'un tas d'os, un orc est en train de dévorer sa dernière victime.",
+      "image": "orc",
+      "final": false,
+      "isLocked": false,
+      "encounter": {
+        "id": 3
+      }
+    },
+    {
+      "name": "Rituel Mystérieux",
+      "desc": "Un rituel ancien est en cours. Vous sentez une puissance incroyable émaner du centre de la salle.",
+      "image": "rituel",
+      "final": false,
+      "actions": [
+        {
+          "action_name": "Interrompre le rituel",
+          "next": 11
+        }
+      ],
+      "collectable": 2,
+      "objets": [
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        }
+      ]
+    },
+    {
+      "name": "Combat contre le Mage maléfique",
+      "desc": "Le mage commence des incantations contre vous !",
+      "image": "mage",
+      "final": false,
+      "encounter": {
+        "id": 5
+      }
+    },
+    {
+      "name": "Fin de jeu",
+      "desc": "",
+      "image": "",
+      "final": true
+    }
+  ]
+}

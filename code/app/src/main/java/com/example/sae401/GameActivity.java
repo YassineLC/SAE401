@@ -62,6 +62,20 @@ public class GameActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        int basePlayerId = getIntent().getIntExtra("character_id", 0);
+        if(basePlayerId == 1)
+        {
+            inventory.add(5);
+        }
+        else if (basePlayerId == 2)
+        {
+            inventory.add(6);
+        }
+        else
+        {
+            inventory.add(7) ;
+        }
+
         int newLocation = getIntent().getIntExtra("newLocation", -1);
         Log.d("NEWLOCATION",String.valueOf(newLocation));
 
@@ -223,17 +237,6 @@ public class GameActivity extends AppCompatActivity {
                         cursor.close();
                     }
                 }
-            }
-
-            if (location == 10) { // TODO: Mettre le niveau John Pork
-                if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-                    mediaPlayer.pause();
-                    mediaPlayer.release();
-                    mediaPlayer = null;
-                }
-                MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.messenger_call);
-                mediaPlayer.start();
-                mediaPlayer.setLooping(true);
             }
 
             boolean isFinal = locationObject.getBoolean("final");
